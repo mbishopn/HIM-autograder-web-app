@@ -9,3 +9,8 @@
 
 ### branch name:dislogin
 ### shorthand for davit issue login
+
+### if working with git bash and are creating a new branch for a feature or any issue you will need to setup upstream
+### for the origin in our github what that means is when we create a project on our localhost we are initializing git init
+### git needs to have upstream setup to origin for every single branch so it will see the connection from your localhost
+### to their server
