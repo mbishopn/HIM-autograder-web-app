@@ -3,7 +3,7 @@
 
 ## UPDATES FOR DB API WILL BE POSTED HERE
 
-API is a Work in Progress, so far:
+API is a Work-in-Progress, so far:
 
 06 march 2024
 Right now you can use it to get a very basic login process withouth password validation.
