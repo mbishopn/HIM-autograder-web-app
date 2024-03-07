@@ -1,8 +1,12 @@
 # HIM-autograder-web-app
 
 
-## This main branch MUST remain untouched.
+## UPDATES FOR DB API WILL BE POSTED HERE
 
-Different branches will be created according to jira's epics. Assignees will work on them and when they are done, make a pull request to merge with main branch.
+06 march 2024
+right now you can use this to get usernames from users table in DEVELOPMENT_USERCRED db.
+the script to add that db is usercred.sql, once you have mounted slcv3 db, run this query,
+it will create DEVELOPMENT_USERCRED db and fill users table with usernames to be used
+by login page.
 
 ## DO NOT MODIFY THIS README FILE.
