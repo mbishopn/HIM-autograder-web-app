@@ -1,4 +1,4 @@
- const abstractsqry =(teacher, pacient, student)=>{
+const abstractsqry =(teacher, pacient, student)=>{
     qry=
     "select distinct a.zzAbstractLink,a.CoderNumberDesc,"+
 //  /*  ------- abstract headers -------*/
@@ -16,11 +16,11 @@
 //  /*  ------- abstract diagnosis -------*/
  " d.DiagnosisOccurrence,d.diagnosisprefix,d.diagnosiscode,d.diagnosissuffix,d.diagnosistype,"+
 //  /*  ------- abstract intervention -------*/
- " i.InterventionOccurrence,i.InterventionDate,i.InterventionCode,i.InterventionSuffixDesc,"+
+ " i.InterventionOccurrence,i.InterventionDate,i.InterventionCode,i.InterventionSuffixDesc," +
  " i.InterventionAttributeStatus,i.InterventionAttributeLocation,i.InterventionAttributeExtent,"+
  " i.InterventionProviderNumberDesc,i.InterventionProviderSpecialty,i.IntervDateIn,"+
  " i.InterventionTimeIn,i.IntervDateOut,i.InterventionTimeOut,i.InterventionLocation,"+
- " i.AnesthetistIDDesc,i.AnestheticTechniqueDesc"+
+ " i.AnesthetistIDDesc,i.AnestheticTechniqueDesc "+
  
  " from i10_amcare_vr a "+
  " join i10_amcare_and_consult_vr c on a.zzAbstractlink=c.zzabstractlink and a.CoderNumber=c.codernumber and a.FullName=c.FullName "+
@@ -54,4 +54,5 @@
   return qry
 }
 
-module.exports = {abstractsqry}
+module.exports = {abstractsqry}   
+

@@ -28,6 +28,7 @@ server.get("/", (request, response) => {
 });
 
 //------------------ RETURNS USERNAMES FOR LOGIN
+
 server.get("/users", async (request, response) => {
 await sql.dbConn("select distinct codernumberdesc from i10_amcare_vr where codernumber='100719';","slcv3")
  .then((result)=>{
@@ -94,7 +95,7 @@ server.post("/login", async (request, response) => {
 //--- false, only teacher's abstracts ( for modifying marking )
 server.get("/abstracts", async (request, response) => {
 
-  await sql.dbConn(abstractsqry("","kirk, paula",false))
+  await sql.dbConn(abstractsqry("","kirk, paula",false),"slcv3")
   .then((result)=>
   {
     //console.log(result)
@@ -169,7 +170,7 @@ server.get("/abstracts", async (request, response) => {
       })
  
       console.log(abs)
-      response.send(abs)
+      response.send(result)
   })
 
 });
