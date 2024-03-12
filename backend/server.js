@@ -8,7 +8,7 @@ const port = 3000;
 const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
 // import dbConn from ('./conn')
-const sql=require('./conn');
+const sql = require('./conn');
 const { abstractsqry } = require("./queries");
 server.use(express.urlencoded({ extended: false }));
 server.use(express.json());
