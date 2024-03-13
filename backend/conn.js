@@ -1,8 +1,26 @@
+/* 
+  dbConn needs 2 arguments:
+  - the sql query
+  - db name ( added because we're working with 2 different db's
+              SCLV3 - the one containing data from med2020
+              DEVELOPMENT_USERCRED - to store app usercreds and
+                                     groups created by teachers )
 
+<<<<<<< HEAD
 const dbConn = (myQry, dbName) => {
   const Connection = require('tedious').Connection;
   const config = {
     server: "DGEBU",    // server name
+=======
+  
+*/
+const dbConn= (myQry, dbName)=>
+{
+  const Connection = require('tedious').Connection;
+  const config = {
+    // server: "192.168.110.128",    // server ip
+    server: "med2020db001.sl.on.ca",    // server name
+>>>>>>> 2ff302275e6c89b3e33b9f49be123b99ee100157
     authentication: {
       type: "default",         // if we use windows authentication on sql server u need this
       //--port:1433
@@ -20,18 +38,66 @@ const dbConn = (myQry, dbName) => {
         }
   }
 
+<<<<<<< HEAD
   const conn = new Connection(config);
+=======
+
+/***************************************************************************************
+ * If any issues connecting to sql server using windows authentication, 
+ * this is the alternative to go, you just need to make sure that:
+ * 
+ *      - you enable SQL authentication in your sql server instance.
+ *      - have created a user/password on sql server
+ *      - grant that user rights to access the database you're working with
+ *      - enable tcp/ip protocol to allow connections ( use sqls config manager)
+ * 
+ * *************************************************************************************/   
+/*
+
+  const config = {
+    server: "<your local sql server name>",    // server name
+    authentication: {
+      type: "default",                      // when using sql authentication this is the good one
+      options: {
+        userName: "<your sql username>",
+        password: "<your sql password>",
+        domain: "<your computer domain>"    //this should be changed to your laptop name while u r not on the slc domain
+
+      }
+    },
+    options:{
+      database: dbName,
+      trustServerCertificate: true,
+      port:1433                             // if using sql authentication u'll need to specify the port
+        }
+  }
+ *******************************************************************************************/
+
+  const conn= new Connection(config);
+>>>>>>> 2ff302275e6c89b3e33b9f49be123b99ee100157
 
   //-------------- CONNECTS AND EXECUTES SQL QUERY ----------------------
   var Request = require('tedious').Request;
   var TYPES = require('tedious').TYPES;
   console.log(myQry)
+<<<<<<< HEAD
   return new Promise((worked, didnotwork) => {
     conn.connect((err) => {
       if (err) { didnotwork(err) }
       else {
         var result = []
         const request = new Request(myQry, (err) => { if (err) { console.log(err); } });
+=======
+  return new Promise((jala, nojala)=>
+  {
+    conn.connect( (err)=>
+    {
+      if (err){nojala(err)}
+      else 
+      {
+        var result=[]
+          const request=new Request(myQry, (err) => {      if (err) { console.log(err);}       });
+>>>>>>> 2ff302275e6c89b3e33b9f49be123b99ee100157
 
 
         request.on('row', function (columns) {
