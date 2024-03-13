@@ -8,13 +8,8 @@ const port = 3000;
 const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
 // import dbConn from ('./conn')
-<<<<<<< HEAD
-const sql = require('./conn');
-const { abstractsqry } = require("./queries");
-=======
 const sql=require('./conn');
 const { abstractsQry,studentsQry,usersQry } = require("./queries");
->>>>>>> 2ff302275e6c89b3e33b9f49be123b99ee100157
 server.use(express.urlencoded({ extended: false }));
 server.use(express.json());
 server.use(cors());
@@ -32,13 +27,8 @@ server.get("/", (request, response) => {
   response.send("LIVE!");
 });
 
-<<<<<<< HEAD
-//------------------ RETURNS USERNAMES FOR LOGIN
-
-=======
 //------------------ USERS ROUTE (TEACHERS NAMES) ------------------------------
 // right now I'm using this but we should change to get usernames from our db
->>>>>>> 2ff302275e6c89b3e33b9f49be123b99ee100157
 server.get("/users", async (request, response) => {
 const result = await sql.dbConn(usersQry(),"slcv3")
 .then((result)=>{
@@ -105,21 +95,6 @@ server.post("/login", async (request, response) => {
 });
 
 
-<<<<<<< HEAD
-  await sql.dbConn(abstractsqry("","kirk, paula",false),"slcv3")
-  .then((result)=>
-  {
-    //console.log(result)
-    abs=[]
-    ab= {}
-    provArr=[]
-    prov= {}
-    diagArr= []
-    diag= {}
-    intervArr=[]
-    interv={}
-    result.forEach(e=>{
-=======
 /*
   --------------------------- ABSTRACTS ROUTE -------------------------
 receives up to 4 arguments:
@@ -139,7 +114,6 @@ receives up to 4 arguments:
   Values:
    <student's name> will return abstract for an specific student
    if undefined or "" will return all students' abstracts
->>>>>>> 2ff302275e6c89b3e33b9f49be123b99ee100157
 
   All of the above could be combine to refine the abstracts set returned.
   If called with no parameters, will return all abstracts created by teachers.
@@ -203,28 +177,6 @@ server.get("/abstracts", async (request, response) =>
                   first=false             
                 }
 
-<<<<<<< HEAD
-          provArr.push(prov)
-          diagArr.push(diag)
-          intervArr.push(interv)
-          ab['prov']=provArr
-          ab['diag']=diagArr
-          ab['interv']=intervArr
-          abs.push(ab)
-          prov={}
-          diag={}
-          interv={}
-        }
-        // }
-      }
-
-          // conArr.push(ob)
-        //  abs.push(ab)
-      })
- 
-      console.log(abs)
-      response.send(result)
-=======
             switch (true)   // store the subsection data in the right place
             {
               case (prop.startsWith('Consult')===true):
@@ -277,7 +229,6 @@ server.get("/abstracts", async (request, response) =>
         abs.push(ab)  // last record from query is saved
         // console.log(abs)
         response.send(abs) // API sends abstracts
->>>>>>> 2ff302275e6c89b3e33b9f49be123b99ee100157
   })
 });
 
