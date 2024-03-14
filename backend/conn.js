@@ -1,86 +1,63 @@
-<<<<<<< Updated upstream
-const Connection = require('tedious').Connection;
+/* 
+  dbConn needs 2 arguments:
+  - the sql query
+  - db name ( added because we're working with 2 different db's
+              SCLV3 - the one containing data from med2020
+              DEVELOPMENT_USERCRED - to store app usercreds and
+                                     groups created by teachers )
 
-const config = {
-
-    server: "med2020db001.sl.on.ca",    // server name
-=======
+  
+*/
 const dbConn = (myQry, dbName) => {
   const Connection = require("tedious").Connection;
   const config = {
+    // server: "192.168.110.128",    // server ip
     server: "localhost", // server name
-    trustServerCertificate: true,
->>>>>>> Stashed changes
     authentication: {
-      trustServerCertificate: true,
-      type: "ntlm", // if we use windows authentication on sql server u need this
+      type: "default", // if we use windows authentication on sql server u need this
       options: {
-        trustServerCertificate: true,
-        trustedConnection: true,
-        encrypt: true,
-        userName: "daksh",
-        password: "1207",
-        domain: "dax", //this should be changed to your laptop name while u r not on the slc domain
+        userName: "dax",
+        password: "123",
+        //domain: "desktop-nk9iigj", //this should be changed to your laptop name while u r not on the slc domain
       },
     },
     options: {
-<<<<<<< Updated upstream
-      database:"SLCV3",
-      trustServerCertificate: true,
-    }
-}
-
-const connection= new Connection(config);
-
-
-connection.on('connect',(err)=>{
-if(err){
-    console.log("valio chorizo")
-    console.log(err)
-}
-else{executeStatement();}
-})
-
-connection.connect();
-
-var Request=require('tedious').Request;
-var TYPES=require('tedious').TYPES;
-
-function executeStatement(){
-    console.log("conectado")
-    var request = new Request("SELECT top(10) * from v_userprofile ;", (err) => {  
-      if (err) {  
-          console.log(err);}  
-      });  
-      var result = "";  
-      request.on('row', (columns) => {  
-          columns.forEach((column)=> {  
-            if (column.value === null) {  
-              console.log('NULL');  
-            } else {  
-              result+= column.value + " ";  
-            }  
-          });  
-          console.log(result);  
-          result ="";  
-      });  
-
-      request.on('done', function(rowCount, more) {  
-      console.log(rowCount + ' rows returned');  
-      });  
-      
-      // Close the connection after the final event emitted by the request, after the callback passes
-      request.on("requestCompleted", (rowCount, more)=> {
-          connection.close();
-      });
-      connection.execSql(request);
-}
-=======
       database: dbName,
       trustServerCertificate: true,
-      encrypt: true,
+      port: 1433,
     },
   };
+
+  /***************************************************************************************
+   * If any issues connecting to sql server using windows authentication,
+   * this is the alternative to go, you just need to make sure that:
+   *
+   *      - you enable SQL authentication in your sql server instance.
+   *      - have created a user/password on sql server
+   *      - grant that user rights to access the database you're working with
+   *      - enable tcp/ip protocol to allow connections ( use sqls config manager)
+   *
+   * *************************************************************************************/
+  /*
+
+  const config = {
+    server: "<your local sql server name>",    // server name
+    authentication: {
+      type: "default",                      // when using sql authentication this is the good one
+      options: {
+        userName: "<your sql username>",
+        password: "<your sql password>",
+        domain: "<your computer domain>"    //this should be changed to your laptop name while u r not on the slc domain
+
+      }
+    },
+    options:{
+      database: dbName,
+      trustServerCertificate: true,
+      port:1433                             // if using sql authentication u'll need to specify the port
+        }
+  }
+ *******************************************************************************************/
 
   const conn = new Connection(config);
 
@@ -88,7 +65,6 @@ function executeStatement(){
   var Request = require("tedious").Request;
   var TYPES = require("tedious").TYPES;
   console.log(myQry);
-
   return new Promise((jala, nojala) => {
     conn.connect((err) => {
       if (err) {
@@ -123,4 +99,3 @@ function executeStatement(){
   });
 };
 module.exports = { dbConn };
->>>>>>> Stashed changes

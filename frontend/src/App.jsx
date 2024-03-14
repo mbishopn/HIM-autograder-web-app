@@ -1,10 +1,13 @@
 import "./App.css";
-<<<<<<< Updated upstream:frontend/src/App.jsx
-=======
-import UpdatePassword from "./UpdatePassword";
->>>>>>> Stashed changes:Frontend/src/App.jsx
-import LoginUser from "./loginPage";
-import LandingPage from "./landingPage";
+import LandingPage from "./LandingPage.jsx";
+import UpdatePassword from "./UpdatePassword.jsx";
+import LoginUser from "./LoginPage.jsx";
+import Grading1 from "./Grading1.jsx";
+import Grading2 from "./Grading2.jsx";
+import MakeGroup from "./makeGroup.jsx";
+import EditGroup from "./EditGroup.jsx";
+import CreateUser from "./CreateUser.jsx";
+
 import { BrowserRouter, Route, Routes } from "react-router-dom"; // to use routing
 
 function App() {
@@ -13,11 +16,13 @@ function App() {
       <BrowserRouter>
         <Routes>
           <Route path="/" element={<LoginUser />} />
-<<<<<<< Updated upstream:frontend/src/App.jsx
-=======
           <Route path="/main" element={<LandingPage />} />
           <Route path="/updateuserpass" element={<UpdatePassword />} />
->>>>>>> Stashed changes:Frontend/src/App.jsx
+          <Route path="/grading1" element={<Grading1 />} />
+          <Route path="/grading2" element={<Grading2 />} />
+          <Route path="/makeGroup" element={<MakeGroup />} />
+          <Route path="/editGroup" element={<EditGroup />} />
+          <Route path="/createUser" element={<CreateUser />} />
         </Routes>
       </BrowserRouter>
     </>
