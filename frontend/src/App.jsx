@@ -1,13 +1,12 @@
 import "./App.css";
-import LandingPage from "./LandingPage.jsx";
-import UpdatePassword from "./UpdatePassword.jsx";
-import LoginUser from "./LoginPage.jsx";
-import Grading1 from "./Grading1.jsx";
-import Grading2 from "./Grading2.jsx";
+import LandingPage from "./LandingPage";
+import UpdatePassword from "./UpdatePassword";
+import Grading1 from "./grading1";
+import Grading2 from "./grading2";
+import LoginUser from "./loginPage";
 import MakeGroup from "./makeGroup.jsx";
-import EditGroup from "./EditGroup.jsx";
+import EditGroup from "./editGroup";
 import CreateUser from "./CreateUser.jsx";
-
 import { BrowserRouter, Route, Routes } from "react-router-dom"; // to use routing
 
 function App() {

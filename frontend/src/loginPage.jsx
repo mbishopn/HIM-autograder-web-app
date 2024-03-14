@@ -26,9 +26,11 @@ export default function LoginUser() {
     await axios
       .post("http://localhost:3000/login", postUser)
       .then((response) => {
+        console.log(response.data.message)
         setPostResponse(<p>{response.data.message}</p>);
-        if (response.data.message == "Successful Login") {
-          navigate("/app");
+        if (response.data.message == "Successful Login"){
+          console.log(response)
+          navigate("/main");
         }
       });
   };
