@@ -46,7 +46,6 @@ export default function LoginUser() {
   };
   return (
     <div className="login-Container">
-      <h2>Login</h2>
       <form action="" onSubmit={postUser}>
         <label htmlFor="username"> Username </label>
         <input
