@@ -47,8 +47,9 @@ export const getAbs = async (t,p,s,sn)=> {
 // ask API to return med2020 users, could be used
 // to get students or teachers
 
-export const getUsers = async ()=> {
-    const users = await client.get('/users')
+export const getUsers = async (route)=> {
+    const users = await client.get('/'+route)
+    console.log(route)
     return users.data
     
     }
