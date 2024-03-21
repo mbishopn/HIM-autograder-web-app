@@ -4,7 +4,7 @@ import UpdatePassword from "./UpdatePassword";
 import Grading1 from "./grading1";
 import Grading2 from "./grading2";
 import LoginUser from "./loginPage";
-import MakeGroup from "./MakeGroup";
+import MakeGroup from "./makeGroup.jsx";
 import EditGroup from "./editGroup";
 import CreateUser from "./CreateUser.jsx";
 import { BrowserRouter, Route, Routes } from "react-router-dom"; // to use routing
@@ -22,8 +22,8 @@ function App() {
           <Route path="/makeGroup" element={<MakeGroup />} />
           <Route path="/editGroup" element={<EditGroup />} />
           <Route path="/createUser" element={<CreateUser />} />
-          <Route path="/LandingPage" element={<LandingPage />} />
-
+          <Route path="/makeGroup" element={<makeGroup/>} />
+          
         </Routes>
       </BrowserRouter>
     </>
