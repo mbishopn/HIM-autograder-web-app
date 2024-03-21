@@ -7,7 +7,7 @@ function compareObjectsManually2(t, s) {
   return result;
 }
 
-export function compareAllStudents(studentsAbstracts) {
+export function compareAllStudents(teacher, studentsAbstracts) {
   const results = [];
   studentsAbstracts.forEach((student) => {
     const result = compareObjectsManually2(teacher, student);

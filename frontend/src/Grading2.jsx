@@ -1,4 +1,6 @@
-export default function Grading2() {
+export default function Grading2({ tAbs, records, pacients, students }) {
+  // console.log(tAbs)
+
   return (
     <div>
       <div>
@@ -8,13 +10,26 @@ export default function Grading2() {
         </select>
         <select name="sPatient" id="sPatient">
           <option value="Select Patient">Select Patient</option>
-          {/* Need to lopp through all the patients in the system */}
+          {Object.values(pacients).map((name, key) => {
+            return (
+              <option key={key} value={name}>
+                {name}
+              </option>
+            );
+          })}
         </select>
         <select name="sStudent" id="sStudent">
           <option value="Select Student">Select Student</option>
-          {/* Need to lopp through all the Student in the system */}
+          {Object.values(students).map((name, key) => {
+            return (
+              <option key={key} value={name}>
+                {name}
+              </option>
+            );
+          })}
         </select>
         <br></br>
+        <input type="sort" value="Sort"></input>
         <div className="Searched_Results">
           <h2>Searched Results</h2>
         </div>

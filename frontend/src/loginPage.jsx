@@ -1,6 +1,7 @@
 import axios from "axios";
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { userLogin } from "./utilities/dbFunctions";
 
 export default function LoginUser() {
   const [formData, setFormData] = useState({
@@ -26,10 +27,10 @@ export default function LoginUser() {
     await axios
       .post("http://localhost:3000/login", postUser)
       .then((response) => {
-        console.log(response.data.message);
+        console.log(response.data.message)
         setPostResponse(<p>{response.data.message}</p>);
-        if (response.data.message == "Successful Login") {
-          console.log(response);
+        if (response.data.message == "Successful Login"){
+          console.log(response)
           navigate("/main");
         }
       });
@@ -46,6 +47,7 @@ export default function LoginUser() {
   };
   return (
     <div className="login-Container">
+      <h2>Login</h2>
       <form action="" onSubmit={postUser}>
         <label htmlFor="username"> Username </label>
         <input
