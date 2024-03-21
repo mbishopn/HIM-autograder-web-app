@@ -65,7 +65,7 @@ const dbConn= (myQry, dbName)=>
   //-------------- CONNECTS AND EXECUTES SQL QUERY ----------------------
   var Request=require('tedious').Request;
   var TYPES=require('tedious').TYPES;
-  console.log(myQry)
+  //console.log(myQry)
   return new Promise((jala, nojala)=>
   {
     conn.connect( (err)=>

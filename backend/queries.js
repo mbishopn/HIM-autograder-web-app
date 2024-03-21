@@ -18,7 +18,7 @@ return qry
  const abstractsQry =(teacher, pacient, iStu,sName)=>{
   // console.log(teacher+"-"+pacient+"-"+student)
     qry=
-    "select distinct a.zzAbstractLink,a.CoderNumberDesc,"+
+    "select distinct a.zzAbstractLink,a.CoderNumberDesc,a.codernumber,"+
 //  /*  ------- abstract headers -------*/
      "a.ChartNumber,a.RegistrationNumber,a.DispositionDate,a.DispositionTime,a.DispositionTimeUnknown,a.DispositionDate,a.DispositionTime,"+
      "a.InstitutionNumberDesc,a.LastName,a.FirstName,a.GenderDesc,a.BirthDate,a.ResponsiblityForPayment,a.PostalCode,a.ArrivalModeDesc,"+

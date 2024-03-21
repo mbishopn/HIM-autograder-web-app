@@ -122,7 +122,8 @@ receives up to 4 arguments:
 server.get("/abstracts", async (request, response) => 
 {
   let {t, p, s, sn }=request.query
-   console.log(request.query)
+  console.log("me pidieron esto") 
+  console.log(request.query)
    console.log(t+"-"+p+"-"+s+"-"+sn)
   if(t===undefined)t=""
   if(p===undefined)p=""
@@ -182,26 +183,26 @@ server.get("/abstracts", async (request, response) =>
               case (prop.startsWith('Consult')===true):
                 if(prop==='ConsultOccurrence'&& e[prop] in consult)
                   crep=true
-                if(!prep && e[prop]!==null)
-                  prop==='ConsultOccurrence'? cOcc=e[prop]: cons[prop]=e[prop]              
+                if(!crep && e[prop]!==null)
+                  prop==='ConsultOccurrence'? cOcc=e[prop]: ab[prop+"-"+cOcc]=e[prop]              
               break
               case (prop.startsWith('Provider')===true):
                 if(prop==='ProviderOccurrence'&& e[prop] in provider)
                   prep=true
                 if(!prep && e[prop]!==null)
-                  prop==='ProviderOccurrence'? pOcc=e[prop]: prov[prop]=e[prop]              
+                    prop==='ProviderOccurrence'? pOcc=e[prop]: ab[prop+"-"+pOcc]=e[prop]           
               break
               case (prop.startsWith('Diagnosis')===true||prop.startsWith('diagnosis')===true):
                 if(prop==='DiagnosisOccurrence'&& e[prop] in diagnosis)
                   drep=true
                 if(!drep && e[prop]!==null)
-                  prop==='DiagnosisOccurrence'? dOcc=e[prop]: diag[prop]=e[prop]
+                  prop==='DiagnosisOccurrence'? dOcc=e[prop]: ab[prop+"-"+dOcc]=e[prop]
                 break
               case (prop.startsWith('Interv')===true):
                 if(prop==='InterventionOccurrence'&& e[prop] in intervention)
                   irep=true
                 if(!irep && e[prop]!==null)
-                 prop==='InterventionOccurrence'? iOcc=e[prop] : interv[prop]=e[prop]
+                 prop==='InterventionOccurrence'? iOcc=e[prop] : ab[prop+"-"+iOcc]=e[prop]
                 break
               default:
                 if(!abrep && e[prop]!==null)
@@ -210,24 +211,24 @@ server.get("/abstracts", async (request, response) =>
             }
             if(prop==='AnestheticTechniqueDesc')    // finish reading the whole record?
             {       // save any occurrences in subsections objects
-              if(!crep && cOcc!==null)
-              {consult[cOcc]=cons;cons=new Object;cOcc=null}
-              if(!prep && pOcc!==null)
-              {provider[pOcc]=prov;prov=new Object;pOcc=null}
-              if(!drep && dOcc!==null)
-              {diagnosis[dOcc]=diag;diag=new Object;dOcc=null}
-              if(!irep && iOcc!==null)
-              {intervention[iOcc]=interv;interv=new Object;iOcc=null}
+              // if(!crep && cOcc!==null)
+              // {consult[cOcc]=cons;cons=new Object;cOcc=null}
+              // if(!prep && pOcc!==null)
+              // {provider[pOcc]=prov;prov=new Object;pOcc=null}
+              // if(!drep && dOcc!==null)
+              // {diagnosis[dOcc]=diag;diag=new Object;dOcc=null}
+              // if(!irep && iOcc!==null)
+              // {intervention[iOcc]=interv;interv=new Object;iOcc=null}
               first=true
             }
           }
         })
-        if(Object.keys(consult).length>0){ab['Consult']=consult}
-        if(Object.keys(provider).length>0){ab['Provider']=provider}
-        if(Object.keys(diagnosis).length>0){ab['Diagnosis']=diagnosis}
-        if(Object.keys(intervention).length>0){ab['Intervention']=intervention}
+        // if(Object.keys(consult).length>0){ab['Consult']=consult}
+        // if(Object.keys(provider).length>0){ab['Provider']=provider}
+        // if(Object.keys(diagnosis).length>0){ab['Diagnosis']=diagnosis}
+        // if(Object.keys(intervention).length>0){ab['Intervention']=intervention}
         abs.push(ab)  // last record from query is saved
-        // console.log(abs)
+         console.log(abs)
         response.send(abs) // API sends abstracts
   })
 });
