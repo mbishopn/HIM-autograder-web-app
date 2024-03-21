@@ -5,7 +5,7 @@ import LoginUser from "./loginPage";
 import ShowAbs from "./ShowAbs";
 import Grading1 from "./Grading1";
 import MakeGroup from "./MakeGroup";
-import EditGroup from "./EditGroup";
+import EditGroup from "./editGroup";
 import CreateUser from "./CreateUser.jsx";
 import Grading2 from "./Grading2";
 
@@ -32,9 +32,9 @@ const pacients = [
 
 const tAbs = records.filter((x) => x["codernumber"] == "100719");
 const sAbs = records.filter((x) => x["codernumber"] != "100719");
-console.log(tAbs);
-console.log(sAbs);
-
+// console.log(tAbs);
+// console.log(sAbs);
+let sAb = sAbs[0];
 tAbs.forEach((tAb) => {
   let sAb = sAbs.filter(
     (x) =>
@@ -42,6 +42,7 @@ tAbs.forEach((tAb) => {
   );
   console.log(sAb);
 });
+
 // hola
 /*--------------------------------------------------------------------------------*/
 function App() {
@@ -65,6 +66,8 @@ function App() {
             path="/grading2"
             element={
               <Grading2
+                tAbs={tAbs}
+                sAb={sAb}
                 students={students}
                 pacients={pacients}
                 records={records}
