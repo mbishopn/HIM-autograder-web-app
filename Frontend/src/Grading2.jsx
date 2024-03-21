@@ -1,6 +1,6 @@
-export default function Grading2({records,pacients, students}) {
+export default function Grading2({tAbs, records,pacients, students}) {
 
-console.log(records)
+// console.log(tAbs)
 
   return (
     <div>

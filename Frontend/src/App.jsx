@@ -12,9 +12,18 @@ import { getAbs } from "./utilities/dbFunctions";
 const records= await getAbs("faryal","",1,"")
 const students=[... new Set(records.map(x=>x['CoderNumberDesc'].toUpperCase()))]
 const pacients=[... new Set(records.map(x=>x['FirstName'].replace(/\s+/g,'').toUpperCase()+' '+x['LastName'].replace(/\s+/g,'').toUpperCase()).sort())]
-console.log(pacients)
 
-// hola
+
+const tAbs=records.filter(x=>x['codernumber']=='100719')
+const sAbs=records.filter(x=>x['codernumber']!='100719')
+console.log(tAbs)
+console.log(sAbs)
+
+tAbs.forEach(tAb=>{
+  let sAb=sAbs.filter(x=>(x['FirstName']==tAb['FirstName'])&&(x['LastName']==tAb['LastName']))
+  console.log(sAb)
+})
+
 /*--------------------------------------------------------------------------------*/
 function App() {
   return (
@@ -25,7 +34,7 @@ function App() {
           <Route path="/main" element={<LandingPage />}/>
           <Route path="/showabstracts" element={<ShowAbs records={records}/>}/>  
           <Route path="/updateuserpass" element={<UpdatePassword/>}/>
-          <Route path="/grading2" element={<Grading2 students={students} pacients={pacients} records={records}/>} />
+          <Route path="/grading2" element={<Grading2 sAbs={sAbs} tAbs={tAbs} students={students} pacients={pacients} records={records}/>} />
         </Routes>
       </BrowserRouter>
     </>
