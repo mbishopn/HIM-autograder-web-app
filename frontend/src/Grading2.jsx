@@ -15,7 +15,6 @@ export default function Grading2() {
           {/* Need to lopp through all the Student in the system */}
         </select>
         <br></br>
-        <input type="sort" value="Sort"></input>
         <div className="Searched_Results">
           <h2>Searched Results</h2>
         </div>

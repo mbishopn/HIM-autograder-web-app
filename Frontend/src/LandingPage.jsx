@@ -1,3 +1,5 @@
+import { Link } from "react-router-dom";
+
 export default function LandingPage() {
   return (
     <>
@@ -5,10 +7,18 @@ export default function LandingPage() {
       <div>
         Welcome to HIM Auto-grader
         <ul>
-          <li>Grading</li>
-          <li>Groups</li>
-          <li>Admin Users</li>
-          <li>Exit</li>
+          <li>
+            <Link to="/grading1">Grading</Link>
+          </li>
+          <li>
+            <Link to="/makeGroup">Groups</Link>
+          </li>
+          <li>
+            <Link to="/createUser">Admin Users</Link>
+          </li>
+          <li>
+            <Link to="/">Log Out</Link>
+          </li>
         </ul>
       </div>
     </>
