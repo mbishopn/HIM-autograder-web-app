@@ -4,6 +4,15 @@
 ## UPDATES FOR DB API WILL BE POSTED HERE
 ## DO NOT MODIFY THIS README FILE.
 
+-------------- 20240320 - API Update
+API updates:
+2 more routes added:
+-students (returns an array with all students)
+-users (returns an array with all teachres)
+
+Astracts are now delivered in 1 level object, not nested objects anymore. The reason for this is to facilitate 
+abstracts handling for comparisons and redering.
+
 -------------  20240312 - API Update - abstracts
 
 1) Now /abstracts route returns abstracts in the format agreed, array of objects containing objects themselves.
