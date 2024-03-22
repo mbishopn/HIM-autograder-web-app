@@ -1,8 +1,11 @@
 function compareObjectsManually2(t, s) {
   const result = {};
   Object.keys(t).forEach((key) => {
-    result[key] = t[key] === s[key];
-    // console.log(`${key}, ${t[key]}, ${s[key]}, ${t[key] === s[key]}`); // loging comparison
+    if (key === "zzAbstractLink" || key === "CoderNumberDesc") {
+      result[key] = s[key];
+    } else {
+      result[key] = t[key] === s[key];
+    } // console.log(`${key}, ${t[key]}, ${s[key]}, ${t[key] === s[key]}`); // loging comparison
   });
   return result;
 }
@@ -20,14 +23,14 @@ export function compareAllStudents(teacher, studentsAbstracts) {
   return results;
 }
 
-console.log("-------------------------------------------");
-const comparisonFinalResults = compareAllStudents(students);
+// console.log("-------------------------------------------");
+// const comparisonFinalResults = compareAllStudents(students);
 
-//
-comparisonFinalResults.forEach((result, index) => {
-  console.log(`Comparison Result ${index + 1}:`);
-  Object.entries(result).forEach(([key, value]) => {
-    console.log(`${key}: ${value}`);
-  });
-  console.log("--------------------------------------");
-});
+// //
+// comparisonFinalResults.forEach((result, index) => {
+//   console.log(`Comparison Result ${index + 1}:`);
+//   Object.entries(result).forEach(([key, value]) => {
+//     console.log(`${key}: ${value}`);
+//   });
+//   console.log("--------------------------------------");
+// });
