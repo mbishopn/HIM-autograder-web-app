@@ -4,20 +4,35 @@ import { compareAllStudents } from "./utilities/compare";
 
 export default function Grading2({ gradedAbs, records, pacients, students }) {
   // console.log(tAbs)
-  const [selectedStudent, setSelectedStudent] = useState("Select Student");
-  const [selectedGroup, setSelectedGroup] = useState("Select Group");
-  const [selectedPatient, setSelectedPatient] = useState("Select Patient");
+  const [selection, setSelection] = useState({
+    student: "",
+    group: "",
+    patient: "",
+  });
+  // const [selectedStudent, setSelectedStudent] = useState("Select Student");
+  // const [selectedGroup, setSelectedGroup] = useState("Select Group");
+  // const [selectedPatient, setSelectedPatient] = useState("Select Patient");
 
-  const handleStudentChange = (evt) => {
-    setSelectedStudent(evt.target.value);
-  };
+  // const handleStudentChange = (evt) => {
+  //   setSelectedStudent(evt.target.value);
+  // };
 
-  const handleGroupChange = (evt) => {
-    setSelectedGroup(evt.target.value);
-  };
+  // const handleGroupChange = (evt) => {
+  //   setSelectedGroup(evt.target.value);
+  // };
 
-  const handlePatientChange = (evt) => {
-    setSelectedPatient(evt.target.value);
+  // const handlePatientChange = (evt) => {
+  //   setSelectedPatient(evt.target.value);
+  // };
+
+  const handleOnChange = (evt) => {
+    const { name, value } = evt.target;
+    setSelection((prevData) => {
+      return {
+        ...prevData, // spread the previous state
+        [name]: value,
+      };
+    });
   };
 
   return (
@@ -29,8 +44,8 @@ export default function Grading2({ gradedAbs, records, pacients, students }) {
             <select
               name="sGroup"
               id="sGroup"
-              value={selectedGroup}
-              onChange={handleGroupChange}
+              value={selection.group}
+              onChange={handleOnChange}
             >
               <option value="Select Group">Select Group</option>
 
@@ -39,8 +54,8 @@ export default function Grading2({ gradedAbs, records, pacients, students }) {
             <select
               name="sPatient"
               id="sPatient"
-              value={selectedPatient}
-              onChange={handlePatientChange}
+              value={selection.patient}
+              onChange={handleOnChange}
             >
               <option value="Select Patient">Select Patient</option>
               {Object.values(pacients).map((name, key) => {
@@ -56,8 +71,8 @@ export default function Grading2({ gradedAbs, records, pacients, students }) {
             <select
               name="sStudent"
               id="sStudent"
-              value={selectedStudent}
-              onChange={handleStudentChange}
+              value={selection.student}
+              onChange={handleOnChange}
             >
               <option value="Select Student">Select Student</option>
               {Object.values(students).map((name, key) => {
@@ -69,7 +84,7 @@ export default function Grading2({ gradedAbs, records, pacients, students }) {
               })}
             </select>
             <br></br>
-            <button></button>
+            <button>Search</button>
           </form>
         </div>
         <div className="Searched_Results">
