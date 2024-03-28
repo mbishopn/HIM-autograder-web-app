@@ -5,7 +5,7 @@ export default function LandingPage() {
     <>
       <h1>Landing Page</h1>
       <div>
-        Welcome to HIM Auto-grader
+        <p>Welcome to HIM Auto-grader</p>
         <ul>
           <li>
             <Link to="/grading1">Grading</Link>

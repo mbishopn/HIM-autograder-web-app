@@ -7,44 +7,47 @@ import Grading2 from "./Grading2";
 
 import { BrowserRouter, Route, Routes } from "react-router-dom"; // to use routing
 import { getAbs } from "./utilities/dbFunctions";
-import { compareAllStudents } from "./utilities/compare";
+import { compareObjectsManually2 } from "./utilities/compare";
 
 /*------------ BY NOW I'M PUTTING THIS HERE BUT IT SHOULD BE ON FUNCTIONS LIBRARY */
-const records = await getAbs("bailey", "", 1, "");
+const records = await getAbs("bailey", "", 1, ""); // get the abstracts from API
+console.log(records);
+// fix pacient names by removing extra spaces and uniforming to uppecase
+records.forEach((x) => {
+  x["FirstName"] = x["FirstName"].replace(/\s+/g, "").toUpperCase();
+  x["LastName"] = x["LastName"].replace(/\s+/g, "").toUpperCase();
+});
+// split records in teacher-students abstracts
+const tAbs = records.filter((x) => x["codernumber"] === "100719"); // teacher's abstracts
+const sAbs = records.filter((x) => x["codernumber"] !== "100719"); // students' abstracts
+// putting students and pacients names into arrays to feed dropdown lists in grading2 component
 const students = [
-  ...new Set(records.map((x) => x["CoderNumberDesc"].toUpperCase())),
+  ...new Set(sAbs.map((x) => x["CoderNumberDesc"].toUpperCase())),
 ];
-const pacients = [
-  ...new Set(
-    records
-      .map(
-        (x) =>
-          x["FirstName"].replace(/\s+/g, "").toUpperCase() +
-          " " +
-          x["LastName"].replace(/\s+/g, "").toUpperCase()
-      )
-      .sort()
-  ),
+const patients = [
+  ...new Set(tAbs.map((x) => x["FirstName"] + " " + x["LastName"]).sort()),
 ];
 
-const tAbs = records.filter((x) => x["codernumber"] == "100719");
-const sAbs = records.filter((x) => x["codernumber"] != "100719");
+console.log(patients.length + " patients");
+console.log(students.length + " students");
 console.log(tAbs);
 console.log(sAbs);
-let gradedAbs = [];
+
+let gradedAbs = []; // this array will hold all students's abracts once they get graded
+
 tAbs.forEach((tAb) => {
+  // loop through tearchs abstracts to grade all students abstracts
   let sAb = sAbs.filter(
     (x) =>
       x["FirstName"] == tAb["FirstName"] && x["LastName"] == tAb["LastName"]
   );
-  //console.log(sAb)
-  gradedAbs.push(compareAllStudents(tAb, sAb));
+  sAb.forEach((student) => {
+    let result = compareObjectsManually2(tAb, student);
+    gradedAbs.push(result);
+  });
 });
-console.log(gradedAbs[0]);
-let tAb = tAbs.filter(
-  (x) => x["FirstName"] == "Duncan" && x["LastName"] == "Aimee"
-);
-console.log(tAb);
+console.log(gradedAbs);
+
 /*--------------------------------------------------------------------------------*/
 function App() {
   return (
@@ -58,16 +61,14 @@ function App() {
             element={<ShowAbs records={records} />}
           />
           <Route path="/updateuserpass" element={<UpdatePassword />} />
+          {/* <Route path="/grading2" element={<Grading2 sAbs={sAbs} tAbs={tAbs} students={students} pacients={pacients} records={records}/>} /> */}
           <Route
             path="/grading2"
             element={
               <Grading2
-                // sAbs={sAbs}
-                // tAbs={tAbs}
-                gradedAbs={gradedAbs[0]}
+                gradedAbs={gradedAbs}
                 students={students}
-                pacients={pacients}
-                records={records}
+                patients={patients}
               />
             }
           />
