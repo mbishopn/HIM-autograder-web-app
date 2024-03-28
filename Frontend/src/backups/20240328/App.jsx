@@ -7,39 +7,45 @@ import Grading2 from "./Grading2"
 
 import { BrowserRouter, Route, Routes } from "react-router-dom"; // to use routing
 import { getAbs } from "./utilities/dbFunctions";
-import { compareObjectsManually2 } from "./utilities/compare";
+import { compareAllStudents, compareObjectsManually2 } from "./utilities/compare";
 
 /*------------ BY NOW I'M PUTTING THIS HERE BUT IT SHOULD BE ON FUNCTIONS LIBRARY */
-const records= await getAbs("bailey","",1,"") // get the abstracts from API
+const records= await getAbs("bailey","",1,"")
 console.log(records)
-// fix pacient names by removing extra spaces and uniforming to uppecase
 records.forEach(x=>{
   x['FirstName']=x['FirstName'].replace(/\s+/g,'').toUpperCase()
   x['LastName']=x['LastName'].replace(/\s+/g,'').toUpperCase()
 })
-// split records in teacher-students abstracts
-const tAbs=records.filter(x=>x['codernumber']==='100719') // teacher's abstracts
-const sAbs=records.filter(x=>x['codernumber']!=='100719') // students' abstracts
-// putting students and pacients names into arrays to feed dropdown lists in grading2 component
+const tAbs=records.filter(x=>x['codernumber']==='100719')
+const sAbs=records.filter(x=>x['codernumber']!=='100719')
 const students=[... new Set(sAbs.map(x=>x['CoderNumberDesc'].toUpperCase()))]
+// I had to add chartnumber because turns out that some teachers abstracts are using repeated pacients names, so we need a way to differentiate them
+// we could just omit it and let them know that they shouldn't use repeated names at least not with same students.
+// const pacients=[... new Set(tAbs.map(x=>[x['ChartNumber']+' - '+ x['RegistrationNumber'], [x['FirstName']+' '+x['LastName']].sort()]))]
 const patients=[... new Set(tAbs.map(x=>x['FirstName']+' '+x['LastName']).sort())]
-
+// const pacients=[... new Set(records.map(x=>x['FirstName'].replace(/\s+/g,'').toUpperCase()+' '+x['LastName'].replace(/\s+/g,'').toUpperCase()).sort())]
 console.log(patients.length + " patients")
 console.log(students.length + " students")
+
+
 console.log(tAbs)
 console.log(sAbs)
-
-let gradedAbs=[]  // this array will hold all students's abracts once they get graded
-
-tAbs.forEach(tAb=>{  // loop through tearchs abstracts to grade all students abstracts
+let gradedAbs=[]
+tAbs.forEach(tAb=>{
   let sAb=sAbs.filter(x=>(x['FirstName']==tAb['FirstName'])&&(x['LastName']==tAb['LastName']))
+  //console.log(sAb)
+  // gradedAbs.push( [tAb['FirstName']+' '+tAb['LastName'],compareAllStudents(tAb,sAb)])
+  // gradedAbs.push(compareAllStudents(tAb,sAb)) // lod eshabilité para probar crear un solo arreglo
   sAb.forEach((student)=>{
-    let result=compareObjectsManually2(tAb,student) 
+    let result=compareObjectsManually2(tAb,student)
     gradedAbs.push(result)
   })
+
+
 })
 console.log(gradedAbs)
-
+// console.log(sAbs.filter(x=>x['FirstName']==='OCTAVIUS')) 
+//  console.log(tAb)
 /*--------------------------------------------------------------------------------*/
 function App() {
   return (

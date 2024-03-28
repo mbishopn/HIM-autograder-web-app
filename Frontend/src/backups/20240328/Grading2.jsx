@@ -2,100 +2,75 @@ import { useEffect, useState } from "react";
 import ShowData from "./showData";
 
 export default function Grading2({gradedAbs, patients, students}) {
-  // hooks and handlers functions for dropdown lists selection
+
   const [selPatient,setSelPatient]=useState('Select Patient')
   const [selStudent,setSelStudent]=useState('Select Student')
+  // const[data,setData]=useState('')
+  // const [data2,setData2]=useState('')
+  let ga=[]
+  ga=gradedAbs
   const hSelPatient=(e)=>{
     setSelPatient(e.target.value)
-   }
-  const hSelStudent=(e)=>{
-    setSelStudent(e.target.value)
+    // console.log(e.target.value)
   }
 
-  //  this function will format the data comming from gradedAbs array according to selections made with dropdown lists
-   const formatData=(sp,ss)=>{
-    let data=[] // array to return
-    let name=''
-    let mark=0    // acumulates student marks 
-    let counter=0  // just counts how many students abstracts are graded
-    let maxMark=0   // 
+  const hSelStudent=(e)=>{
+    setSelStudent(e.target.value)
+    // console.log(e.target.value)
+  }
 
+   const formatData=(a1,a2)=>{
+    let data=[]
+    let ab=[]
+    let name=''
+    let mark=0
+    let counter=0
+    let maxMark=0
+    //let data=(a1!=='Select Patient'?a1:'') + ' -- ' + (a2!=='Select Student'?a2:'')
     switch (true)
-    { // --------------------------------------- format summary by pacient -------------------------------------------------
-      case (sp!=='Select Patient' && ss==='Select Student'):
-        ss=''
-        name=sp.split(' ')
+    { // format summary by pacient
+      case (a1!=='Select Patient' && a2==='Select Student'):
+        a2='All students'
+        name=a1.split(' ')
         
-        gradedAbs.forEach((abs)=>{
+        ga.forEach((abs)=>{
           
-          if((abs['FirstName'][0]===name[0]) && (abs['LastName'][0]===name[1]))  // consider only currently selected PATIENT abstracts
+          if((abs['FirstName'][0]===name[0]) && (abs['LastName'][0]===name[1]))
           {
             maxMark=0
             Object.values(abs).map(x=>{
-              
-              if(x[2]!==''){maxMark++;mark+=x[2]} // if field must be marked, add it to maximun marks and student marks
+              maxMark++
+             if(x[2]!=='')
+             mark+=x[2]
             })
+            // console.log(a1,abs['CoderNumberDesc'][0],mark+' out of '+maxMark)
+            
             counter++
             data.push([abs['RegistrationNumber'][0],abs['ChartNumber'][0],abs['ChartNumber'][1],abs['CoderNumberDesc'][1],mark, maxMark])
             mark=0
           }
+          // {
+        
+          //   data.push(abs)}
         })
         
         console.log(counter)
         // data=''
       break
-      // ------------------------------------------- format summary by student ---------------------------------------------------
-      case (sp==='Select Patient' && ss!=='Select Student'):
-        sp=''
-        
-        gradedAbs.forEach((abs)=>{
-         
-          if((abs['CoderNumberDesc'][1].toUpperCase()===ss))  // consider only currently selected STUDENT abstracts
-          {
-             
-            maxMark=0
-            Object.values(abs).map(x=>{
-              
-              if(x[2]!==''){maxMark++;mark+=x[2]} // if field must be marked, add it to maximun marks and student marks
-            })
-            counter++
-            data.push([abs['RegistrationNumber'][0],abs['ChartNumber'][0],abs['ChartNumber'][1],abs['FirstName'][0],abs['LastName'][0],mark, maxMark])
-            mark=0
-          }
-        })
-
-        console.log(counter)
+      // format summary by student
+      case (a1==='Select Patient' && a2!=='Select Student'):
+        a1='All patients'
       break
-      // -------------------------------------- show specific pacient-student abstract ------------------------------------------
-      case (sp!=='Select Patient' && ss!=='Select Student'):
-        name=sp.split(' ')
-        gradedAbs.forEach((abs)=>{
-         
-          if((abs['CoderNumberDesc'][1].toUpperCase()===ss) && (abs['FirstName'][0]===name[0]) && (abs['LastName'][0]===name[1]))  // consider only currently selected STUDENT abstracts
-          {
-           
-            //console.log(abs)
-            maxMark=0
-            Object.values(abs).map((x)=>{
-              //console.log(x)
-              if(x[2]!==''){console.log("aquiestoy");maxMark++;mark+=x[2]} // if field must be marked, add it to maximun marks and student marks
-              data.push([x[0],x[1],x[2]])
-            })
-            
-             counter++
-            console.log(data)
-            mark=0
-          }
-        })
-
-        console.log(counter)
+      // show specific pacient-student abstract
+      case (a1!=='Select Patient' && a2!=='Select Student'):
+        
       break
       default:
-        sp='';ss=''
+        a1='All Patients';a2='All Students'
         // data=JSON.stringify(gradedAbs)
         data=''
     }
-    return [sp+' -- '+ss+" Abstracts: "+counter,data]
+    return [a1+' -- '+a2,data]
   }
   
 
