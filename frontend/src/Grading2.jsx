@@ -97,18 +97,17 @@ export default function Grading2({ gradedAbs, patients, students }) {
             data[0] = [h0, h1, h2, h3, h4];
             Object.values(abs).map((x) => {
               //console.log(x)
-              if (x[4] !== "") {
+              if (x[3] !== "") {
                 maxMark++;
                 mark += x[3];
               } // if field must be marked, add it to maximun marks and student marks
               data.push([x[0], x[1], x[2], x[3], x[4]]);
             });
 
-            // let m = mark;
-            // let total = "Total Grades";
-            // data.push([0]=total,[1]='',[2]='',[3]=m,[4]='')
-
             counter++;
+            // Adding total to the end
+            const total = ["Total", "", "", mark, ""];
+            data.push(total);
             console.log(data);
             mark = 0;
           }
