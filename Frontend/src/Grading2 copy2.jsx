@@ -11,8 +11,7 @@ export default function Grading2({ gradedAbs, patients, students }) {
   const hSelStudent = (e) => {
     setSelStudent(e.target.value);
   };
-  const [sectedItems, setSelectedItems] = useState([]);
-  const [enteredNum, setEnteredNum] = useState({ fieldName: "", value: "" });
+
   //  this function will format the data comming from gradedAbs array according to selections made with dropdown lists
   const formatData = (sp, ss) => {
     let data = []; // array to return
@@ -21,30 +20,6 @@ export default function Grading2({ gradedAbs, patients, students }) {
     let counter = 0; // just counts how many students abstracts are graded
     let maxMark = 0; //
 
-    function checkboxHandler(e) {
-      let isSelected = e.target.checked;
-      let value = e.target.value;
-      if (isSelected) {
-        setSelectedItems([...sectedItems, value]);
-      } else {
-        setSelectedItems((prevData) => {
-          return prevData.filter((fName) => {
-            return fName !== value;
-          });
-        });
-      }
-    }
-
-    const onNumChange = (e) => {
-      let { name, value } = e.target;
-
-      setEnteredNum((prevData) => {
-        return {
-          ...prevData,
-          [name]: value,
-        };
-      });
-    };
     switch (
       true // --------------------------------------- format summary by pacient -------------------------------------------------
     ) {
@@ -113,8 +88,6 @@ export default function Grading2({ gradedAbs, patients, students }) {
             //console.log(abs)
 
             //Heading of Table
-            let c1 = <input type="checkbox" />;
-
             let h0 = "Field Name";
             let h1 = "Teacher Abstarct";
             let h2 = "Student Abstarct";
@@ -122,32 +95,14 @@ export default function Grading2({ gradedAbs, patients, students }) {
             let h4 = "Multiplier";
             let h5 = "Total";
             maxMark = 0;
-            data[0] = [c1, h0, h1, h2, h3, h4, h5];
+            data[0] = [h0, h1, h2, h3, h4, h5];
             Object.values(abs).map((x) => {
+              //console.log(x)
               if (x[3] !== "") {
-                x[4] = (
-                  <input
-                    type="checkbox"
-                    value={x[0]}
-                    checked={sectedItems.includes(x[0])}
-                    onChange={checkboxHandler}
-                  />
-                );
                 maxMark++;
                 mark += x[3];
-
-                x[5] = (
-                  <input type="number" name={x[0]} onChange={onNumChange} />
-                );
-
-                if (sectedItems.includes(x[0])) {
-                  x[6] = parseInt(x[3]) * parseInt(enteredNum[x[0]].value);
-                } else {
-                  x[6] = "";
-                }
               } // if field must be marked, add it to maximun marks and student marks
-
-              data.push([x[4], x[0], x[1], x[2], x[3], x[5], x[6]]);
+              data.push([x[0], x[1], x[2], x[3], x[4]]);
             });
 
             counter++;
