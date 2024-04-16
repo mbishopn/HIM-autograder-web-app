@@ -72,44 +72,36 @@ server.post("/updatePassword", async (request, response) => {
 //--------------- USER Registration POST - register
 
 server.post("/register", async (request, response) => {
-  // const { username, password } = request.body;
+  const { username, password } = request.body;
 
+  // Validate input
   if (!username || !password) {
-    return response.send("Username and/or password is not provided");
+    return response.status(400).send("Username and/or password is not provided");
   }
-  // Generate salt and hash the password
-  const saltRounds = await bcrypt.genSalt();
-  console.log(saltRounds);
-  await bcrypt
-    .hash(password, saltRounds)
-    .then((result) => {
-      sql.dbConn(
-        "INSERT INTO users (username, userpassword) VALUES (?, ?)",
-        [username, result],
-        "development_usercred"
-      );
 
+  try {
+    // Generate salt and hash the password
+    const saltRounds = await bcrypt.genSalt();
+    const hashedPassword = await bcrypt.hash(password, saltRounds);
 
+    // Insert user into the database
+    await sql.dbConn(
+      "INSERT INTO users (username, userPassword) VALUES (?, ?)",
+      [username, hashedPassword],
+      "development_usercred"
+    );
 
-      // sql.dbConn(
-      //   "INSERT INTO users (username, userpassword) VALUES",
-      //   "'" + username + "'", "'" + result + "'",
-      //   "development_usercred"
-      // );
-      //       INSERT INTO table_name (column1, column2, column3, ...)
-      // VALUES (value1, value2, value3, ...);
-      console.log(result);
-    })
-    .catch((error) => console.log(error));
-  // try {
-  //   // Store the username and hashed password in the database
-  //   await // Respond with success message or appropriate response
-  //   response.send("User registered successfully.");
-  // } catch (error) {
-  //   console.error("Error registering user:", error);
-  //   // response.send("Error registering user.");
-  // }
+    console.log("User registered successfully.");
+    response.send("User registered successfully.");
+  } catch (error) {
+    console.error("Error registering user:", error);
+
+    
+    response.status(500).send("Internal Server Error");
+  }
 });
+
+
 
 
 // server.post("/login", async (request, response) => {

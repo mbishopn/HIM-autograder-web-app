@@ -41,7 +41,7 @@ export default function CreateUser() {
                     <input type="text" name="username" id="username" onChange={handleOnChange} value={formData.username} required />
                     <h3 htmlFor="password">Password: </h3>
                     <input type="password" name="password" id="password" onChange={handleOnChange} value={formData.password} required />                    <br /> <br />
-                    <button className="logButton">Sign Up</button>
+                    <button>Sign Up</button>
                 </form>
 
                 {postResponse}
