@@ -12,9 +12,15 @@ const sql = require('./conn');
 const { abstractsQry, studentsQry, usersQry } = require("./queries");
 server.use(express.urlencoded({ extended: false }));
 server.use(express.json());
-server.use(cors());
 
+// this must  allow the frontend to connect to the server
+//
+const corsOptions = {
+  origin: "http://localhost:5173",
+  Credential: true,
+};
 
+server.use(cors(corsOptions));
 
 
 // ---------- LISTENING APP REQUESTS -----------------
@@ -80,23 +86,27 @@ server.post("/register", async (request, response) => {
   }
 
   try {
-    // Generate salt and hash the password
+    // Generating salt and hashing the password
     const saltRounds = await bcrypt.genSalt();
     const hashedPassword = await bcrypt.hash(password, saltRounds);
 
     // Insert user into the database
-    await sql.dbConn(
-      "INSERT INTO users (username, userPassword) VALUES (?, ?)",
-      [username, hashedPassword],
-      "development_usercred"
-    );
+    const query = `
+  INSERT INTO users (username, userPassword) VALUES (?, ?);
+  SELECT username, userpassword FROM users WHERE username = ? AND userpassword = ?;
+`;
+
+    const values = [username, password, username, password];
+
+    await sql.dbConn(query, values, "development_usercred");
+
 
     console.log("User registered successfully.");
     response.send("User registered successfully.");
   } catch (error) {
     console.error("Error registering user:", error);
 
-    
+
     response.status(500).send("Internal Server Error");
   }
 });
@@ -146,6 +156,9 @@ server.post("/login", async (request, response) => {
     // querying the db to get the requested users with matching username and password
     const user = await sql.dbConn("SELECT username, userpassword FROM users WHERE username = '" + username + "' AND userpassword = '" + password + "'", "development_usercred");
     // here we check if user with the exists. by checking if the username and passowrd returned from db is not empty
+
+
+
     if (user.length !== 0) {
 
       // this will  compare and check the passwords which is hashed when user registers
