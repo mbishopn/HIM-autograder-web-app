@@ -8,7 +8,7 @@ export default function LandingPage() {
         <p>Welcome to HIM Auto-grader</p>
         <ul>
           <li>
-            <Link to="/grading1">Grading</Link>
+            <Link to="/grading2">Grading</Link>
           </li>
           <li>
             <Link to="/makeGroup">Groups</Link>

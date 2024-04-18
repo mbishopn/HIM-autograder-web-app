@@ -12,7 +12,7 @@ export default function Grading2({ gradedAbs, patients, students }) {
     setSelStudent(e.target.value);
   };
   const [sectedItems, setSelectedItems] = useState([]);
-  const [enteredNum, setEnteredNum] = useState({ fieldName: "", value: "" });
+  const [enteredNum, setEnteredNum] = useState({});
   //  this function will format the data comming from gradedAbs array according to selections made with dropdown lists
   const formatData = (sp, ss) => {
     let data = []; // array to return
@@ -114,7 +114,6 @@ export default function Grading2({ gradedAbs, patients, students }) {
 
             //Heading of Table
             let c1 = <input type="checkbox" />;
-
             let h0 = "Field Name";
             let h1 = "Teacher Abstarct";
             let h2 = "Student Abstarct";
@@ -122,6 +121,7 @@ export default function Grading2({ gradedAbs, patients, students }) {
             let h4 = "Multiplier";
             let h5 = "Total";
             maxMark = 0;
+            // let top;
             data[0] = [c1, h0, h1, h2, h3, h4, h5];
             Object.values(abs).map((x) => {
               if (x[3] !== "") {
@@ -135,13 +135,17 @@ export default function Grading2({ gradedAbs, patients, students }) {
                 );
                 maxMark++;
                 mark += x[3];
-
+                // top = x[1];
+                // console.log(top);
                 x[5] = (
                   <input type="number" name={x[0]} onChange={onNumChange} />
                 );
 
+                console.log(enteredNum);
+                console.log(enteredNum[sectedItems[0]] * x[3]);
+                Object.values;
                 if (sectedItems.includes(x[0])) {
-                  x[6] = parseInt(x[3]) * parseInt(enteredNum[x[0]].value);
+                  x[6] = parseInt(x[3]);
                 } else {
                   x[6] = "";
                 }
@@ -152,7 +156,7 @@ export default function Grading2({ gradedAbs, patients, students }) {
 
             counter++;
             // Adding total to the end
-            const total = ["Total", "", "", mark, ""];
+            const total = ["Total", "", "", "", mark];
             data.push(total);
             console.log(data);
             mark = 0;

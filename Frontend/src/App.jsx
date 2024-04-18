@@ -8,7 +8,6 @@ import Grading2 from "./Grading2";
 import { BrowserRouter, Route, Routes } from "react-router-dom"; // to use routing
 import { getAbs } from "./utilities/dbFunctions";
 import { compareObjectsManually2 } from "./utilities/compare";
-import Grading1 from "./Grading1";
 
 /*------------ BY NOW I'M PUTTING THIS HERE BUT IT SHOULD BE ON FUNCTIONS LIBRARY */
 const records = await getAbs("bailey", "", 1, ""); // get the abstracts from API
@@ -63,7 +62,7 @@ function App() {
           />
           <Route path="/updateuserpass" element={<UpdatePassword />} />
           {/* <Route path="/grading2" element={<Grading2 sAbs={sAbs} tAbs={tAbs} students={students} pacients={pacients} records={records}/>} /> */}
-          <Route path="/grading1" element={<Grading1 />} />
+
           <Route
             path="/grading2"
             element={
