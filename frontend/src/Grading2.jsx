@@ -13,6 +13,7 @@ export default function Grading2({ gradedAbs, patients, students }) {
   };
   const [sectedItems, setSelectedItems] = useState([]);
   const [enteredNum, setEnteredNum] = useState({});
+  const [finalFieldGrade, setFinalFieldGrade] = useState({});
   //  this function will format the data comming from gradedAbs array according to selections made with dropdown lists
   const formatData = (sp, ss) => {
     let data = []; // array to return
@@ -140,15 +141,17 @@ export default function Grading2({ gradedAbs, patients, students }) {
                 x[5] = (
                   <input type="number" name={x[0]} onChange={onNumChange} />
                 );
-
-                console.log(enteredNum);
-                console.log(enteredNum[sectedItems[0]] * x[3]);
-                Object.values;
-                if (sectedItems.includes(x[0])) {
-                  x[6] = parseInt(x[3]);
-                } else {
-                  x[6] = "";
-                }
+                console.log(x[5]);
+                x[6] = x[5].value * x[3];
+                // console.log(enteredNum);
+                // console.log(enteredNum[sectedItems[0]] * x[3]);
+                // sectedItems.map((y) => {
+                // console.log(enteredNum[y] * x[3]);
+                // setFinalFieldGrade(
+                //   (finalFieldGrade[y] = parseInt(enteredNum[y] * x[3]))
+                // );
+                // console.log(finalFieldGrade);
+                // });
               } // if field must be marked, add it to maximun marks and student marks
 
               data.push([x[4], x[0], x[1], x[2], x[3], x[5], x[6]]);
