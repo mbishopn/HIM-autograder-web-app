@@ -2,20 +2,20 @@
 
 import axios from "axios"
 
-const client = axios.create({ baseURL: "http://127.0.0.1:3000"})
+const client = axios.create({ baseURL: "http://127.0.0.1:3000"})   // base url for API server
 
 // FUNCTIONS TO SEND TO BACK END API
 
 // ----------------  login FUNCTION  ------------------
-// receive and send user credentials to the API and 
+// receives from App and sends user credentials to the API and 
 // returns its answer
 export const userLogin = async (user)=>{
-    console.log(user)
+
     const result = await client.post("/login", user)
     let answer=false
     if(result.data.message == "Successful Login")
         {
-            answer=true
+            answer=true  // I'm not really using this cause msg holds the outcome of login
         }
     return {username:user.username, msg:result.data.message, token:result.data.token, qry:result.data.qry}
 }
@@ -31,16 +31,13 @@ return result.data
 }
 
 // -------------- getAbs FUNCTION ------------------
-// ask API to return abstracts according to parameters
-// specified.
+// asks API to return abstracts according to parameters
+// specified. Arguments description is on server.js backend file
 
 export const getAbs = async (t,p,s,sn)=> {
-    //console.log("parametros: ",t,",",p,",",s)
     t=t===undefined?"":t;p=p===undefined?"":p;s=s===undefined?false:s;
     const result = await client.get(`/abstracts?t=${t}&p=${p}&s=${s}&sn=${sn}`)
-    //console.log("llego esto ", result.data)
     return result.data
-    
     }
 
 // -------------- getUsers FUNCTION ------------------
@@ -49,13 +46,11 @@ export const getAbs = async (t,p,s,sn)=> {
 
 export const getUsers = async (route,qry)=> {
     const users = await client.get('/'+route+'?qry='+qry)
-    console.log(route)
     return users.data
-    
     }
 
 
-//------------------------ NO LO USO ----------------------------------
+//------------------------CODE BELOW IS TO BE DELETED ----------------------------------
 // --------------- getProducts FUNCTION ---------------
 // retrieves all inventory items to be showed in main
 

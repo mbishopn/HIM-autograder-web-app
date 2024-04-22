@@ -19,6 +19,15 @@ create table users
 	)
 
 -- table holding groups created by teachers
+drop table groups if exists
+create table groups
+(
+	id int IDENTITY(1,1) primary key,
+	username varchar(50),               -- teacher username in med2020
+	grouptag varchar(50),				-- group id tag (optional)
+	studentid varchar(50),				-- student codernumber in med2020 ( they should keep using SLC studentID to assure uniqueness)
+	studentname varchar(50)				-- student name
+	)
 
 -- first, let's create the admin user with default password admin
 INSERT INTO users (username,userPassword)

@@ -1,7 +1,6 @@
 import { getAbs } from "./dbFunctions";
 
-// once we get the custom grading array, we should apply it here
-// I think we must allow custom grading template by group/pacient
+//-------------- THIS FUNCTION PERFORMS TEACHERS - STUDENTS ABSTRACTS COMPARISON ------------------------------
 
 export function compareObjectsManually2(t, s) {
   const result = {};
@@ -21,12 +20,12 @@ export function compareObjectsManually2(t, s) {
   return result;
 }
 
-/*------------ BY NOW I'M PUTTING THIS HERE BUT IT SHOULD BE ON FUNCTIONS LIBRARY */
+// ---------- THIS FUNCTION GETS ALL ABSTRACTS RELATED TO A TEACHER - STUDENTS, COMPARES THEM AND SENDS THEM BACK ----------
 export async function gradeAbstracts(teacher) 
 {
   const records = await getAbs(teacher, "", 1, ""); // get the abstracts from API
-  // console.log(records);
-  // fix pacient names by removing extra spaces and uniforming to uppecase
+
+  // fix patient names by removing extra spaces and uniforming to uppecase
   records.forEach((x) => {
     x["FirstName"] = x["FirstName"].replace(/\s+/g, "").toUpperCase();
     x["LastName"] = x["LastName"].replace(/\s+/g, "").toUpperCase();
@@ -34,7 +33,7 @@ export async function gradeAbstracts(teacher)
   // split records in teacher-students abstracts
   const tAbs = records.filter((x) => x["codernumber"] === "100719"); // teacher's abstracts
   const sAbs = records.filter((x) => x["codernumber"] !== "100719"); // students' abstracts
-  // putting students and pacients names into arrays to feed dropdown lists in grading2 component
+  // putting students and patients names into arrays to feed dropdown lists in grading2 component
   const students = [
     ...new Set(sAbs.map((x) => x["CoderNumberDesc"].toUpperCase())),
   ];
@@ -51,38 +50,11 @@ export async function gradeAbstracts(teacher)
         x["FirstName"] == tAb["FirstName"] && x["LastName"] == tAb["LastName"]
     );
     sAb.forEach((student) => {
-      let result = compareObjectsManually2(tAb, student);
+      let result = compareObjectsManually2(tAb, student); // comparing abstracts!
       gradedAbs.push(result);
     });
   });
-  // console.log(gradedAbs);
-  const result={gradedAbs,students,patients}
+
+  const result={gradedAbs,students,patients}  // put all together in an array (abstracts,students and patients)
   return [result]
 }
-
-/*--------------------------------------------------------------------------------*/
-
-/// -------------------------- NO USED ANYMORE, MOVED THE LOGIC OUTSIDE, BY NOW IN APP.JSX ------------
-// export function compareAllStudents(teacher, studentsAbstracts) {
-//   //const results = [];
-//   studentsAbstracts.forEach((student) => {
-//     const result = compareObjectsManually2(teacher, student);
-//     // result["totalGrade"] = Object.values(result).reduce(
-//     //   (total, value) => total + value,0);
-//     // results.push(result);
-//     return result;
-//   });
-//   //return results;
-// }
-
-//   console.log("-------------------------------------------")
-//   const comparisonFinalResults = compareAllStudents(students)
-
-//
-//   comparisonFinalResults.forEach((result, index) => {
-//     console.log(`Comparison Result ${index + 1}:`);
-//     Object.entries(result).forEach(([key, value]) => {
-//       console.log(`${key}: ${value}`);
-//     });
-//     console.log("--------------------------------------");
-//   });

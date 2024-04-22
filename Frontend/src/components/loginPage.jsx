@@ -1,4 +1,3 @@
-
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { userLogin } from "./../utilities/dbFunctions";
@@ -24,13 +23,13 @@ export default function LoginUser() {
   };
 
   const postToDB = async (user) => {                     // ------ calls login function
-    console.log(user)
+    // console.log(user)
     const result= await userLogin(user)
     if (result.msg=="Successful Login")
     {
       Cookies.set("jwt-cookie",result.token)
       if(result.username==='admin')
-        {console.log("llegue al admin");navigate("/admin",{state:{qryname:result.qry}})}
+        {navigate("/admin",{state:{qryname:result.qry}})}
       else
         {navigate("/main",{state:{qryname:result.qry}})}
     }
@@ -48,7 +47,9 @@ export default function LoginUser() {
 
   return (
     <div className="login-Container">
-      <h2>Login</h2>
+      <img className="logoHIM" src="./src/assets/logo.jpg"></img>
+       <h2>HIM Autograder</h2>
+       <p>Use same username as in med2020.</p>
       <form action="" onSubmit={postUser}>
         <label htmlFor="username"> Username </label>
         <input

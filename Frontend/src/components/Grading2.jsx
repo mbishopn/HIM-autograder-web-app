@@ -3,7 +3,7 @@ import ShowData from "./showData";
 import { useLocation } from "react-router-dom";
 import { gradeAbstracts } from "../utilities/compare";
 
-export default function Grading2({qryname/* gradedAbs, students, patients */}) {
+export default function Grading2({qryname, absData/* gradedAbs, students, patients */}) {
 
   // console.log(absData)
   // console.log(qryname)
@@ -24,14 +24,14 @@ const hSelStudent = (e) => {
 let formatData=null
 let students=[]
 let patients=[]
-const [absData,setAbsData]=useState(null)
+// const [absData,setAbsData]=useState(null)
 
 
-useEffect(()=>{
-  gradeAbstracts(qryname).then((result)=>setAbsData(result))
-},[qryname])
+// useEffect(()=>{
+//   gradeAbstracts(qryname).then((result)=>setAbsData(result))
+// },[qryname])
 
- console.log(absData)
+//  console.log(absData)
 if(absData!==null)
 {
   const gradedAbs=absData[0].gradedAbs
@@ -105,7 +105,7 @@ formatData = (sp, ss) => {
           }
         });
 
-        console.log(counter);
+        // console.log(counter);
         // data=''
         break;
       // ------------------------------------------- format summary by student ---------------------------------------------------

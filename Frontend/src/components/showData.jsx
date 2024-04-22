@@ -1,3 +1,5 @@
+// this component is used to render abstracts data
+
 import "../App.css";
 
 export default function ShowData({ data }) {
@@ -6,7 +8,6 @@ export default function ShowData({ data }) {
       <table>
         <tbody>
           {Object.values(data).map((x, i) => {
-            //console.log(x)
             return (
               <tr key={i}>
                 {Object.values(x).map((v, i) => {

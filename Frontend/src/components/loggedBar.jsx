@@ -6,13 +6,10 @@ export default function LoggedBar(){
     const navigate = useNavigate()
 
 const loggedUser=jwtDecode(Cookies.get("jwt-cookie")).id    
-  // decodes cookie to get user id
-
     return (
-
             <div className="NavBar">
-                Wellcome, {loggedUser}
+                <span className="welcome"><img className="logoHIM-navbar" src="./src/assets/logo.jpg"></img>Welcome, {loggedUser}</span>
                 <button className="Remove-Button" onClick={()=>{Cookies.remove("jwt-cookie");navigate("/")}}>Logout</button>
             </div>
-    )
+            )
 }

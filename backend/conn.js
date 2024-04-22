@@ -33,8 +33,6 @@ const dbConn= (myQry, dbName)=>
       {
         var result=[]
           const request=new Request(myQry, (err) => {      if (err) { console.log(err);}       });
-
-
             request.on('row', function(columns)
             { 
               var entry={};
@@ -48,7 +46,6 @@ const dbConn= (myQry, dbName)=>
             request.on('done', ()=>{jala(result);conn.close(); });
             request.on('requestCompleted', ()=>{jala(result);conn.close(); });
             conn.execSql(request);
-
       }
     })
   })

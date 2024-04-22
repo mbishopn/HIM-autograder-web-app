@@ -1,50 +1,46 @@
 //  Create user component. asks for new user credentials and stores them in the DB
 import { useEffect, useState } from "react";
-import { useNavigate } from "react-router-dom";
 import { getUsers,updatePassword } from "../utilities/dbFunctions";
-
-//import { createUser } from "./utilities/dbFunctions";
 
 export default function UpdatePassword() {
 
-  const navigate = useNavigate();
   const [user, setUser] = useState({ username: "", password: "" }) // hook for form data
-  const [selTeacher, setSelTeacher] = useState("Select User");
   const [teachers,setTeachers]=useState(null)
   const [postResponse, setPostResponse] = useState(""); // get API responses
-
-
-
 
   const handleOnChange = (evt) => {             // to show characters as user writes filling the form
     const { name, value } = evt.target;
     setUser((prevUser) => {
-      console.log(user)
       return { ...prevUser, [name]: value };
     })
   }
 
-  const handleOnSubmit = (evt) => {               // calls createUser function and return is response
+  const handleOnSubmit = (evt) => {               // sends new credentials to API
     evt.preventDefault();
-    updatePassword(user)
-    .then((result)=>setPostResponse(result))
-    setUser({                                     // clean the form
-      username: "",
-      password: "",
-    })
+    if(user.username!==''&&user.username!=='Select User'&&user.password!=='')
+    {updatePassword(user)
+      .then((result)=>setPostResponse(result))
+      {
+          setUser({username: "",password: ""})
+        document.getElementById('updatepassword').reset()
+      }
+    }
+    else {setUser({username: "",password: ""});setPostResponse("Fill the from before clicking")}
+  }
+
+  const resetButton =(evt)=>{
+    evt.preventDefault();
+    setPostResponse("")
   }
 
  useEffect(()=>{
   getUsers("users",1).then((result)=>setTeachers(result))
   },[])
 
-
-console.log(teachers)
   return (
     <div className="login">
-      <h2>Create User</h2>
-      <form action="" onSubmit={handleOnSubmit}>
-      <select name="username" id="steacher" onChange={handleOnChange}>
+      <form id="updatepassword" action="" onSubmit={handleOnSubmit}>
+      <select name="username" id="steacher" onChange={handleOnChange} defaultValue="Select User">
           <option value="Select User">Select User</option>
            {teachers!==null?Object.values(teachers).map((value,key)=>{
             return(
@@ -54,7 +50,7 @@ console.log(teachers)
         <br />
         <label htmlFor="password">Password: </label>
         <input
-          type="text"
+          type="password"
           name="password"
           id="password"
           value={user.password}
@@ -62,7 +58,7 @@ console.log(teachers)
         />
         <br/>
         <br />
-        {postResponse==""?<button onClick={handleOnSubmit}>Update Password</button>:""}
+        {postResponse==""?<button onClick={handleOnSubmit}>Update Password</button>:<button onClick={resetButton}>Reset</button>}
      
       </form>
       {postResponse}

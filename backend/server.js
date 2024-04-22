@@ -7,14 +7,12 @@ require("dotenv/config");
 const port = 3000;
 const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
-// import dbConn from ('./conn')
+
 const sql=require('./conn');
 const { abstractsQry,studentsQry,usersQry } = require("./queries");
 server.use(express.urlencoded({ extended: false }));
 server.use(express.json());
 server.use(cors());
-
-
 
 
 // ---------- LISTENING APP REQUESTS -----------------
@@ -48,7 +46,6 @@ const result = await sql.dbConn(usersQry(qry),db)
 server.get("/students", async (request, response) => {
   await sql.dbConn(studentsQry(),"slcv3")
    .then((result)=>{
-    console.log("caquita")
     console.log(result)
     response.send(result)
   })
@@ -63,15 +60,8 @@ server.post("/updatePassword", async (request, response) => {
   if(username!==undefined&&password!==undefined)
   await sql.dbConn("update users set userPassword='"+(encPass)+"' where username='"+ username +"'","development_usercred")
   .then((result)=>{
-  // const newUser = new User({
-  //   username: request.body.username,
-  // });
-  // newUser.password = newUser.generateHash(request.body.password);
-  // const saveUser = await newUser.save();
   console.log(result)
-  //  result
-  //   ? response.send("Password has been updated")
-  //   : response.send("Failed to update password");
+  response.send("Password has been updated")
   })
 });
 
@@ -80,12 +70,8 @@ server.post("/updatePassword", async (request, response) => {
 server.post("/login", async (request, response) => {
   const { username, password } = request.body;
   console.log(username,password)
-  // const jwtToken = jwt.sign({id: username}, "token")
   await sql.dbConn("select username,qryname,userpassword from users where username='"+username+"'","development_usercred")
-  //await User.findOne({ username }).then((user) => {
   .then((user)=>{
-    
-    //console.log(user)
     if (user.length!==0) {
       bcrypt.compare(password, user[0].userpassword, (err, res) => {
         if (err) {
@@ -234,6 +220,8 @@ server.get("/abstracts", async (request, response) =>
   })
 });
 
+
+/// ----------------- CODE BELOW IS TO BE DELETED -----------------------------------
 server.post("/submitProduct", async (request, response) => {
   const productData = ({ id, productName, brand, quantity, image, price } =
     request.body);
