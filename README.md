@@ -4,10 +4,6 @@
 ## UPDATES FOR DB API WILL BE POSTED HERE
 ## DO NOT MODIFY THIS README FILE.
 
--------------- 20240328 - GRADING PAGE FINALLY SHOWING ABSTRACTS AND SUMMARIES BY PACIENT / STUDENT
-
-Too tired to add comments :D
-
 -------------- 20240320 - API Update
 API updates:
 2 more routes added:

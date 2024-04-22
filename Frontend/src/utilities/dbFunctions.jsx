@@ -17,14 +17,14 @@ export const userLogin = async (user)=>{
         {
             answer=true
         }
-    return {answer:answer, msg:result.data.message, token:result.data.token}
+    return {username:user.username, msg:result.data.message, token:result.data.token, qry:result.data.qry}
 }
 
-// -------------- createUser FUNCTION ------------------
-// sends data to create new user credentials to API
+// -------------- updatePassword FUNCTION ------------------
+// sends data to update user credentials to API
 
-export const createUser = async (user)=> {
-const result = await client.post("/register", user)
+export const updatePassword = async (user)=> {
+const result = await client.post("/updatePassword", user)
 console.log(result.data)
 return result.data
 
@@ -47,8 +47,8 @@ export const getAbs = async (t,p,s,sn)=> {
 // ask API to return med2020 users, could be used
 // to get students or teachers
 
-export const getUsers = async (route)=> {
-    const users = await client.get('/'+route)
+export const getUsers = async (route,qry)=> {
+    const users = await client.get('/'+route+'?qry='+qry)
     console.log(route)
     return users.data
     

@@ -1,17 +1,19 @@
-import axios from "axios";
+
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { userLogin } from "./utilities/dbFunctions";
+import { userLogin } from "./../utilities/dbFunctions";
+import Cookies from "js-cookie"
 
 export default function LoginUser() {
-  const [formData, setFormData] = useState({
+  
+  const navigate = useNavigate();
+  const [postResponse, setPostResponse] = useState("");  // ----- login responses
+  const [formData, setFormData] = useState({             // ----- credentials for login
     username: "",
     password: "",
   });
-  const [postResponse, setPostResponse] = useState("");
-  const navigate = useNavigate();
 
-  const handleOnChange = (evt) => {
+  const handleOnChange = (evt) => {                      // ----- handles form changes
     const { name, value } = evt.target;
     setFormData((prevData) => {
       return {
@@ -21,30 +23,29 @@ export default function LoginUser() {
     });
   };
 
-  const postToDB = async (user) => {
-    const postUser = { ...user };
-
-    await axios
-      .post("http://localhost:3000/login", postUser)
-      .then((response) => {
-        console.log(response.data.message)
-        setPostResponse(<p>{response.data.message}</p>);
-        if (response.data.message == "Successful Login"){
-          console.log(response)
-          navigate("/main");
-        }
-      });
+  const postToDB = async (user) => {                     // ------ calls login function
+    console.log(user)
+    const result= await userLogin(user)
+    if (result.msg=="Successful Login")
+    {
+      Cookies.set("jwt-cookie",result.token)
+      if(result.username==='admin')
+        {console.log("llegue al admin");navigate("/admin",{state:{qryname:result.qry}})}
+      else
+        {navigate("/main",{state:{qryname:result.qry}})}
+    }
+    else {setPostResponse(result.msg)}
   };
 
-  const postUser = async (evt) => {
+  const postUser = async (evt) => {                       // ------ gets crential from form and resets it
     evt.preventDefault();
     postToDB(formData);
-
     setFormData({
       username: "",
       password: "",
     });
   };
+
   return (
     <div className="login-Container">
       <h2>Login</h2>

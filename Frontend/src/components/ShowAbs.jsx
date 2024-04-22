@@ -1,4 +1,4 @@
-import { getUsers,getAbs } from "./utilities/dbFunctions"
+import { getUsers,getAbs } from "../utilities/dbFunctions"
 import { useState, useEffect } from "react";
 
 export default function ShowAbs({records}) {

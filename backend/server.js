@@ -30,7 +30,14 @@ server.get("/", (request, response) => {
 //------------------ USERS ROUTE (TEACHERS NAMES) ------------------------------
 // right now I'm using this but we should change to get usernames from our db
 server.get("/users", async (request, response) => {
-const result = await sql.dbConn(usersQry(),"slcv3")
+  let {qry }=request.query
+  let db=''
+  if(qry==='1')
+   {db="development_usercred"}
+  if(qry==='2')
+   {db="slcv3"}
+   console.log("tengo --->"+qry + " mi db es: " + db)
+const result = await sql.dbConn(usersQry(qry),db)
 .then((result)=>{
   console.log(result)
   response.send(result)
@@ -47,19 +54,24 @@ server.get("/students", async (request, response) => {
   })
   });
 
-//--------------------- user registration post
+//--------------------- UPDATE USER PASSWORD ----------------------------
 
 server.post("/updatePassword", async (request, response) => {
-  await sql.dbConn("update users set userPassword='"+generateHash(request.body.password)+"' where user=`{request.boy.username}`","development_usercred")
+  console.log(request.body)
+  const {username,password}=request.body
+  encPass=bcrypt.hashSync(password,10)
+  if(username!==undefined&&password!==undefined)
+  await sql.dbConn("update users set userPassword='"+(encPass)+"' where username='"+ username +"'","development_usercred")
   .then((result)=>{
   // const newUser = new User({
   //   username: request.body.username,
   // });
   // newUser.password = newUser.generateHash(request.body.password);
   // const saveUser = await newUser.save();
-   result
-    ? response.send("Password has been updated")
-    : response.send("Failed to update password");
+  console.log(result)
+  //  result
+  //   ? response.send("Password has been updated")
+  //   : response.send("Failed to update password");
   })
 });
 
@@ -67,25 +79,26 @@ server.post("/updatePassword", async (request, response) => {
 
 server.post("/login", async (request, response) => {
   const { username, password } = request.body;
-  console.log(username)
-  //const jwtToken = jwt.sign({id: username}, "token")
-  await sql.dbConn("select user,userpassword from users where username='"+username+"'","development_usercred")
+  console.log(username,password)
+  // const jwtToken = jwt.sign({id: username}, "token")
+  await sql.dbConn("select username,qryname,userpassword from users where username='"+username+"'","development_usercred")
   //await User.findOne({ username }).then((user) => {
   .then((user)=>{
     
     //console.log(user)
     if (user.length!==0) {
-      // bcrypt.compare(password, user.password, (err, res) => {
-      //   if (err) {
-      //     response.send(err);
-      //   }
-        // if (res) {
-        console.log(user)
-         response.send({message: "Successful Login", token: "jwtToken"});
-        // } else {
-          // response.send({message: "Bad username or password"});
-      //   }
-      // });
+      bcrypt.compare(password, user[0].userpassword, (err, res) => {
+        if (err) {
+          response.send(err);
+        }
+        if (res) {
+        console.log("esto devuelvo :" + user[0].username + ":" + user[0].userpassword + " busqueda: "+ user[0].qryname)
+        const jwtToken = jwt.sign({id: user[0].username}, "token")
+         response.send({message: "Successful Login", token: jwtToken, qry:user[0].qryname});
+        } else {
+          response.send({message: "Bad username or password"});
+        }
+      });
 
     }
     else {
@@ -210,23 +223,11 @@ server.get("/abstracts", async (request, response) =>
               break 
             }
             if(prop==='AnestheticTechniqueDesc')    // finish reading the whole record?
-            {       // save any occurrences in subsections objects
-              // if(!crep && cOcc!==null)
-              // {consult[cOcc]=cons;cons=new Object;cOcc=null}
-              // if(!prep && pOcc!==null)
-              // {provider[pOcc]=prov;prov=new Object;pOcc=null}
-              // if(!drep && dOcc!==null)
-              // {diagnosis[dOcc]=diag;diag=new Object;dOcc=null}
-              // if(!irep && iOcc!==null)
-              // {intervention[iOcc]=interv;interv=new Object;iOcc=null}
+            {
               first=true
             }
           }
         })
-        // if(Object.keys(consult).length>0){ab['Consult']=consult}
-        // if(Object.keys(provider).length>0){ab['Provider']=provider}
-        // if(Object.keys(diagnosis).length>0){ab['Diagnosis']=diagnosis}
-        // if(Object.keys(intervention).length>0){ab['Intervention']=intervention}
         abs.push(ab)  // last record from query is saved
          console.log(abs)
         response.send(abs) // API sends abstracts

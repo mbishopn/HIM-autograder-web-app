@@ -1,34 +1,28 @@
 //  Create user component. asks for new user credentials and stores them in the DB
-import axios from "axios";
-
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { getUsers,updatePassword } from "../utilities/dbFunctions";
+
 //import { createUser } from "./utilities/dbFunctions";
 
 export default function UpdatePassword() {
 
   const navigate = useNavigate();
-
   const [user, setUser] = useState({ username: "", password: "" }) // hook for form data
-
-
+  const [selTeacher, setSelTeacher] = useState("Select User");
+  const [teachers,setTeachers]=useState(null)
   const [postResponse, setPostResponse] = useState(""); // get API responses
+
+
+
 
   const handleOnChange = (evt) => {             // to show characters as user writes filling the form
     const { name, value } = evt.target;
     setUser((prevUser) => {
+      console.log(user)
       return { ...prevUser, [name]: value };
     })
   }
-
- const updatePassword = async (user)=> {
-    await axios.post("http://localhost:3000/updatePassword", user)
-    .then((result)=>{
-      console.log(result.data.message)
-      setPostResponse(<p>{result.data.message}</p>)
-    })
-    
-    return result.data}
 
   const handleOnSubmit = (evt) => {               // calls createUser function and return is response
     evt.preventDefault();
@@ -40,18 +34,23 @@ export default function UpdatePassword() {
     })
   }
 
+ useEffect(()=>{
+  getUsers("users",1).then((result)=>setTeachers(result))
+  },[])
+
+
+console.log(teachers)
   return (
     <div className="login">
       <h2>Create User</h2>
       <form action="" onSubmit={handleOnSubmit}>
-        <label htmlFor="username">Username: </label>
-        <input
-          type="email"
-          name="username"
-          id="username"
-          value={user.username}
-          onChange={handleOnChange}
-        />
+      <select name="username" id="steacher" onChange={handleOnChange}>
+          <option value="Select User">Select User</option>
+           {teachers!==null?Object.values(teachers).map((value,key)=>{
+            return(
+              <option key={key} value={value.username}>{value.username}</option>
+           )}):""}
+        </select>
         <br />
         <label htmlFor="password">Password: </label>
         <input
@@ -63,9 +62,8 @@ export default function UpdatePassword() {
         />
         <br/>
         <br />
-        {postResponse==""?<><button onClick={handleOnSubmit}>Submit</button><button onClick={()=>navigate("/")}>Back to Login</button></>:""}
+        {postResponse==""?<button onClick={handleOnSubmit}>Update Password</button>:""}
      
-        {postResponse==""?"":<button onClick={()=>navigate("/")}>Back to Login</button>}
       </form>
       {postResponse}
       
