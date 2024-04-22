@@ -7,14 +7,12 @@ require("dotenv/config");
 const port = 3000;
 const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
-// import dbConn from ('./conn')
+
 const sql=require('./conn');
-const { abstractsqry } = require("./queries");
+const { abstractsQry,studentsQry,usersQry } = require("./queries");
 server.use(express.urlencoded({ extended: false }));
 server.use(express.json());
 server.use(cors());
-
-
 
 
 // ---------- LISTENING APP REQUESTS -----------------
@@ -22,33 +20,48 @@ server.listen(port, () => {
   console.log(`Listening on ${port}...\nConnected to DB`);
 })
 
-// ------------- NOTHING --------------------
+// ------------- DEFAULT ROUTE, JUST TO CHECK API IS ALIVE --------------------
 server.get("/", (request, response) => {
   response.send("LIVE!");
 });
 
-//------------------ RETURNS USERNAMES FOR LOGIN
+//------------------ USERS ROUTE (TEACHERS NAMES) ------------------------------
+// right now I'm using this but we should change to get usernames from our db
 server.get("/users", async (request, response) => {
-await sql.dbConn("select distinct codernumberdesc from i10_amcare_vr where codernumber='100719';","slcv3")
- .then((result)=>{
+  let {qry }=request.query
+  let db=''
+  if(qry==='1')
+   {db="development_usercred"}
+  if(qry==='2')
+   {db="slcv3"}
+   console.log("tengo --->"+qry + " mi db es: " + db)
+const result = await sql.dbConn(usersQry(qry),db)
+.then((result)=>{
   console.log(result)
   response.send(result)
 })
 });
 
-//--------------------- user registration post
+//------------------ STUDENTS ROUTE -----------------------------------
+server.get("/students", async (request, response) => {
+  await sql.dbConn(studentsQry(),"slcv3")
+   .then((result)=>{
+    console.log(result)
+    response.send(result)
+  })
+  });
+
+//--------------------- UPDATE USER PASSWORD ----------------------------
 
 server.post("/updatePassword", async (request, response) => {
-  await sql.dbConn("update users set userPassword='"+generateHash(request.body.password)+"' where user=`{request.boy.username}`","development_usercred")
+  console.log(request.body)
+  const {username,password}=request.body
+  encPass=bcrypt.hashSync(password,10)
+  if(username!==undefined&&password!==undefined)
+  await sql.dbConn("update users set userPassword='"+(encPass)+"' where username='"+ username +"'","development_usercred")
   .then((result)=>{
-  // const newUser = new User({
-  //   username: request.body.username,
-  // });
-  // newUser.password = newUser.generateHash(request.body.password);
-  // const saveUser = await newUser.save();
-   result
-    ? response.send("Password has been updated")
-    : response.send("Failed to update password");
+  console.log(result)
+  response.send("Password has been updated")
   })
 });
 
@@ -56,25 +69,22 @@ server.post("/updatePassword", async (request, response) => {
 
 server.post("/login", async (request, response) => {
   const { username, password } = request.body;
-  console.log(username)
-  //const jwtToken = jwt.sign({id: username}, "token")
-  await sql.dbConn("select user,userpassword from users where username='"+username+"'","development_usercred")
-  //await User.findOne({ username }).then((user) => {
+  console.log(username,password)
+  await sql.dbConn("select username,qryname,userpassword from users where username='"+username+"'","development_usercred")
   .then((user)=>{
-    
-    //console.log(user)
     if (user.length!==0) {
-      // bcrypt.compare(password, user.password, (err, res) => {
-      //   if (err) {
-      //     response.send(err);
-      //   }
-        // if (res) {
-        console.log(user)
-         response.send({message: "Successful Login", token: "jwtToken"});
-        // } else {
-          // response.send({message: "Bad username or password"});
-      //   }
-      // });
+      bcrypt.compare(password, user[0].userpassword, (err, res) => {
+        if (err) {
+          response.send(err);
+        }
+        if (res) {
+        console.log("esto devuelvo :" + user[0].username + ":" + user[0].userpassword + " busqueda: "+ user[0].qryname)
+        const jwtToken = jwt.sign({id: user[0].username}, "token")
+         response.send({message: "Successful Login", token: jwtToken, qry:user[0].qryname});
+        } else {
+          response.send({message: "Bad username or password"});
+        }
+      });
 
     }
     else {
@@ -83,97 +93,135 @@ server.post("/login", async (request, response) => {
   })
 });
 
-//------------------ get absctracts
-//--- this route receives 2 args: 
-// OWNER, which could be:
-//--- teacher's name ( this will return all abstracts for specified teacher)
-//--- all teachers (will return all tearcher's abstracts)
-//--- teacher's name 
-// ISTU, which could be:
-//--- true, to include all teacher's students abstracts. ( for auto-grader feature)
-//--- false, only teacher's abstracts ( for modifying marking )
-server.get("/abstracts", async (request, response) => {
 
-  await sql.dbConn(abstractsqry("","kirk, paula",false))
-  .then((result)=>
-  {
-    //console.log(result)
-    abs=[]
-    ab= {}
-    provArr=[]
-    prov= {}
-    diagArr= []
-    diag= {}
-    intervArr=[]
-    interv={}
-    result.forEach(e=>{
+/*
+  --------------------------- ABSTRACTS ROUTE -------------------------
+receives up to 4 arguments:
+  t 
+  Values:
+    <teacher's name>, will return abstracts belonging to that specific teacher
+    if undefined or "" will return all teachers' abstracts
+  p
+  Values:
+   <Pacient's name>, used to return abstracts for an specific pacient
+   if undefined or "" will return all pacients' abstracts
+  s
+  Values:
+    1, includes abstracts made by students
+    <anything else>, returns abstracts only for teachers
+  sN
+  Values:
+   <student's name> will return abstract for an specific student
+   if undefined or "" will return all students' abstracts
 
-      for (prop in e)
-      {
-         //if(prop==='zzAbstractLink'&&ab[prop]!==e[prop])
-        // {
-        //     ab[prop]=e[prop]
-        // }
-        // else
-        // {
-        switch (true)
+  All of the above could be combine to refine the abstracts set returned.
+  If called with no parameters, will return all abstracts created by teachers.
+*/
+
+server.get("/abstracts", async (request, response) => 
+{
+  let {t, p, s, sn }=request.query
+  console.log("me pidieron esto") 
+  console.log(request.query)
+   console.log(t+"-"+p+"-"+s+"-"+sn)
+  if(t===undefined)t=""
+  if(p===undefined)p=""
+  if(s!=='1')s=0;
+  if(sn===undefined)sn=""
+  console.log(t+"-"+p+"-"+s+"-"+sn)
+  await sql.dbConn(abstractsQry(t,p,s===0?false:true,sn),"slcv3") //call dbConn() to execute query using query and db passed
+  .then((result)=>{
+        abs=[]      // array holding all abstracts returned
+        ab= {}      // obj to hold an abstract data
+        consult={}  // obj to accummulate consultation occurrences
+        cons={}     // stores data fields for each consultation occurrence
+        provider={} // obj to accummulate provider occurrences
+        prov= {}    // stores data fields for each provider occurrence
+        diagnosis={}// obj to accummulate diagnosis occurrences
+        diag= {}    // stores data fields for each diagnosis occurrence
+        intervention={} // obj to accummulate intervention occurrences
+        interv={}   // stores data fields for each intervention occurrence
+        cOcc=null   // used to write number of consultation occurrence
+        pOcc=null   // used to write number of provider occurrence
+        dOcc=null   // used to write number of diagnosis occurrence
+        iOcc=null   // used to write number of intervention occurrence
+        first=false // flag to know if first record belonging to a unique abstract has been completely read
+
+        result.forEach(e=>  // loop through all records (rows) returned by sql query
         {
-          case (prop.startsWith('Provider')===true):
-            prov[prop]=e[prop]
-            // console.log("prov")
-            break
-          case ((prop.startsWith('diagnos')===true || prop.startsWith('Diagnos'===true))):
-              diag[prop]=e[prop]
-            //console.log("diag")
+          abrep=false // flag for records containing repeated abstract data
+          crep=false  // flag for records containing repeated consult data
+          prep=false  // flag for records containing repeated provider data
+          drep=false  // flag for records containing repeated diagnosis data
+          irep=false  // flat for records containing repeated intervention data
 
-            // ab['Diagnosis']
-            break
-          case (prop.startsWith('Interv')===true):
-            interv[prop]=e[prop]
-            console.log("interv")
-            // ab['Intervention']
-            break
-          default:
-            // if(ab[prop]===e[prop])
-            //   {
-                ab[prop]=e[prop]
-            //   }
-            // else
-            // {
-            //   abs.push(ab)
-            //   prov={}
-            //   provArr=[]
-            //   ab={}
-            // }
-          break 
-        }
-        if(prop==='AnestheticTechniqueDesc')
-        {
+          for (prop in e)   // loop through all fields (columns) returned by sql query
+          {
+            if(ab['zzAbstractLink']!=='' && first)
+              if(ab['zzAbstractLink']===e['zzAbstractLink']) // is this record related to previous one?
+                abrep=true
+              else      // this record belongs to a different abstract
+                {
+                  if(Object.keys(consult).length>0){ab['Consult']=consult}
+                  if(Object.keys(provider).length>0){ab['Provider']=provider}
+                  if(Object.keys(diagnosis).length>0){ab['Diagnosis']=diagnosis}
+                  if(Object.keys(intervention).length>0){ab['Intervention']=intervention}
+                  abs.push(ab)    // insert the previous abstract into the final array to be returned
+                                  // and reset all objects to build next abstract
+                  ab=new Object
+                  consult=new Object
+                  provider=new Object
+                  diagnosis=new Object
+                  intervention=new Object
+                  abrep=false
+                  first=false             
+                }
 
-          provArr.push(prov)
-          diagArr.push(diag)
-          intervArr.push(interv)
-          ab['prov']=provArr
-          ab['diag']=diagArr
-          ab['interv']=intervArr
-          abs.push(ab)
-          prov={}
-          diag={}
-          interv={}
-        }
-        // }
-      }
-
-          // conArr.push(ob)
-        //  abs.push(ab)
-      })
- 
-      console.log(abs)
-      response.send(abs)
+            switch (true)   // store the subsection data in the right place
+            {
+              case (prop.startsWith('Consult')===true):
+                if(prop==='ConsultOccurrence'&& e[prop] in consult)
+                  crep=true
+                if(!crep && e[prop]!==null)
+                  prop==='ConsultOccurrence'? cOcc=e[prop]: ab[prop+"-"+cOcc]=e[prop]              
+              break
+              case (prop.startsWith('Provider')===true):
+                if(prop==='ProviderOccurrence'&& e[prop] in provider)
+                  prep=true
+                if(!prep && e[prop]!==null)
+                    prop==='ProviderOccurrence'? pOcc=e[prop]: ab[prop+"-"+pOcc]=e[prop]           
+              break
+              case (prop.startsWith('Diagnosis')===true||prop.startsWith('diagnosis')===true):
+                if(prop==='DiagnosisOccurrence'&& e[prop] in diagnosis)
+                  drep=true
+                if(!drep && e[prop]!==null)
+                  prop==='DiagnosisOccurrence'? dOcc=e[prop]: ab[prop+"-"+dOcc]=e[prop]
+                break
+              case (prop.startsWith('Interv')===true):
+                if(prop==='InterventionOccurrence'&& e[prop] in intervention)
+                  irep=true
+                if(!irep && e[prop]!==null)
+                 prop==='InterventionOccurrence'? iOcc=e[prop] : ab[prop+"-"+iOcc]=e[prop]
+                break
+              default:
+                if(!abrep && e[prop]!==null)
+                  ab[prop]=e[prop]
+              break 
+            }
+            if(prop==='AnestheticTechniqueDesc')    // finish reading the whole record?
+            {
+              first=true
+            }
+          }
+        })
+        abs.push(ab)  // last record from query is saved
+         console.log(abs)
+        response.send(abs) // API sends abstracts
   })
-
 });
 
+
+/// ----------------- CODE BELOW IS TO BE DELETED -----------------------------------
 server.post("/submitProduct", async (request, response) => {
   const productData = ({ id, productName, brand, quantity, image, price } =
     request.body);
