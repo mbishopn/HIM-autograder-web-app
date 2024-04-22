@@ -29,7 +29,7 @@ create table groups
 
 -- first, let's create the admin user with default password admin
 INSERT INTO users (username,userPassword)
-VALUES ('admin','admin');
+VALUES ('admin','$2b$10$eX/.3m77iOejtH1msZTjFe8JLAucsjKyIeEJdexupIIgJLuODXB7O');
 -- now let's bring all current teachers in med2020 to this database
 --insert into development_usercred.dbo.users (username,qryname) select distinct a.codernumberdesc from slcv3.dbo.i10_amcare_vr a where a.codernumber='100719'
 
