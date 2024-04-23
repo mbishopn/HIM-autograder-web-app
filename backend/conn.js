@@ -11,12 +11,12 @@
 const dbConn = (myQry, dbName) => {
   const Connection = require("tedious").Connection;
   const config = {
-    server: "localhost", // server name
+    server: "DGEBU", // server name
     authentication: {
       type: "default", // when using sql authentication this is the good one
       options: {
-        userName: "zewais",
-        password: "database123",
+        userName: "dgebu",
+        password: "123",
         // domain: "<your computer domain>", //this should be changed to your laptop name while u r not on the slc domain
       },
     },
