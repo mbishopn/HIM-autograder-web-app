@@ -49,6 +49,15 @@ export const getUsers = async (route,qry)=> {
     return users.data
     }
 
+// -------------- getGroups FUNCTION ------------------
+// ask API to get an return groups created by teachers
+// you need to pass teacher's username
+
+export const getGroups = async (teacher)=> {
+    const groups = await client.get('/groups?teacher='+teacher)
+    return groups.data
+    }
+
 
 //------------------------CODE BELOW IS TO BE DELETED ----------------------------------
 // --------------- getProducts FUNCTION ---------------
