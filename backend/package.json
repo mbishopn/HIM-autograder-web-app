@@ -17,6 +17,7 @@
     "jsonwebtoken": "^9.0.2",
     "mssql": "^10.0.2",
     "nodemon": "^3.1.0",
+    "react-csv": "^2.2.2",
     "stream": "^0.0.2",
     "tedious": "^16.7.0"
   }

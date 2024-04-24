@@ -1,7 +1,10 @@
 import { useEffect, useState } from "react";
 import ShowData from "./showData";
-import { useLocation } from "react-router-dom";
-import { gradeAbstracts } from "../utilities/compare";
+// import { useLocation } from "react-router-dom";
+// import { gradeAbstracts } from "../utilities/compare";
+// import ArrayToCSV from "../utilities/ArrayToCSV";
+// import DownloadCSV from "../utilities/DownloadCSV";
+import { CSVLink } from "react-csv";
 
 export default function Grading2({
   qryname,
@@ -14,7 +17,7 @@ export default function Grading2({
   const [selStudent, setSelStudent] = useState("Select Student");
   const [selectedItems, setSelectedItems] = useState([]);
   const [enteredNum, setEnteredNum] = useState({});
-  const [finalFieldGrade, setFinalFieldGrade] = useState({});
+  // const [finalFieldGrade, setFinalFieldGrade] = useState({});
 
   const hSelPatient = (e) => {
     setSelPatient(e.target.value);
@@ -226,6 +229,12 @@ export default function Grading2({
     };
   }
 
+  // const handleDownloadCSV = (data = formatData(selPatient, selStudent)[1]) => {
+  //   const csvContent = ArrayToCSV(data);
+  //   DownloadCSV(csvContent, "C://downloadedFile.csv");
+  //   console.log("Here", csvContent);
+  // };
+
   // return <>
   // {absData!==null?absData[0].gradedAbs.length:"Loading Abstr..."}
   // </>
@@ -262,7 +271,16 @@ export default function Grading2({
           <ShowData data={formatData(selPatient, selStudent)[1]} />
         </h3>
       </div>
-      <button className="Export">Export to CSV</button>
+      <button className="Export">
+        <CSVLink
+          data={formatData(selPatient, selStudent)[1]}
+          filename="my-csv.csv"
+          target="_blank"
+          style={{ textDecoration: "none" }}
+        >
+          Download Report
+        </CSVLink>
+      </button>
       <button className="Clear">Clear Results</button>
       <button className="Back">Back</button>
     </div>
