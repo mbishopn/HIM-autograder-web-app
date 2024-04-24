@@ -9,7 +9,7 @@ const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
 
 const sql=require('./conn');
-const { abstractsQry,studentsQry,usersQry } = require("./queries");
+const { abstractsQry,studentsQry,usersQry,groupsQry } = require("./queries");
 server.use(express.urlencoded({ extended: false }));
 server.use(express.json());
 server.use(cors());
@@ -42,6 +42,17 @@ const result = await sql.dbConn(usersQry(qry),db)
 })
 });
 
+//------------------ GROUPS ROUTE -----------------------------------
+server.get("/groups", async (request, response) => {
+  let{teacher}=request.query
+  console.log(teacher)
+  await sql.dbConn(groupsQry(teacher),"development_usercred")
+   .then((result)=>{
+    console.log(result)
+    response.send(result)
+  })
+  });
+
 //------------------ STUDENTS ROUTE -----------------------------------
 server.get("/students", async (request, response) => {
   await sql.dbConn(studentsQry(),"slcv3")
@@ -73,18 +84,23 @@ server.post("/login", async (request, response) => {
   await sql.dbConn("select username,qryname,userpassword from users where username='"+username+"'","development_usercred")
   .then((user)=>{
     if (user.length!==0) {
-      bcrypt.compare(password, user[0].userpassword, (err, res) => {
+      if(user[0].userpassword!==null)
+      {bcrypt.compare(password, user[0].userpassword, (err, res) => {
         if (err) {
+          console.log(err)
           response.send(err);
         }
-        if (res) {
-        console.log("esto devuelvo :" + user[0].username + ":" + user[0].userpassword + " busqueda: "+ user[0].qryname)
-        const jwtToken = jwt.sign({id: user[0].username}, "token")
-         response.send({message: "Successful Login", token: jwtToken, qry:user[0].qryname});
+        else
+        {
+          if (res) {
+          // console.log("esto devuelvo :" + user[0].username + ":" + user[0].userpassword + " busqueda: "+ user[0].qryname)
+          const jwtToken = jwt.sign({id: user[0].username}, "token")
+          response.send({message: "Successful Login", token: jwtToken, qry:user[0].qryname});
         } else {
           response.send({message: "Bad username or password"});
-        }
-      });
+        }}
+      });}
+      else { response.send({message:"Your password hasn't been set yet, contact Admin"})}
 
     }
     else {

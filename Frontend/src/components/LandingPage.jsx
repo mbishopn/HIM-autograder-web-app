@@ -7,13 +7,14 @@ import EditGroup from "./EditGroup"
 import { useNavigate, Link, useLocation } from "react-router-dom";
 import { gradeAbstracts } from "../utilities/compare";
 import { useEffect, useState } from "react";
+import { getGroups } from "../utilities/dbFunctions";
 
 export default function LandingPage() {
 
   const location = useLocation()      // to get the states
   const {qryname} = location.state!==null?location.state:""  // qryname is the one used to identify teacher's abstrats in db, it's different to username in med2020/HIM app
   const [absData,setAbsData]=useState(null)
-  
+  const [groups,setGroups]=useState(null)
   const toggleGroups = (evt)=>{
     let group=document.getElementById('groups')
     let info=document.getElementById('infoArea')
@@ -25,15 +26,19 @@ export default function LandingPage() {
 
   useEffect(()=>{
     gradeAbstracts(qryname).then((result)=>setAbsData(result))
+    getGroups(qryname).then((result)=>setGroups(result))
   },[qryname])
+  console.log(qryname)
+ console.log(groups)
+
   return (
     <>
       <div><LoggedBar /></div>
       <div className="title">HIM Autograder</div>
       <div className="mainContainer">
       <div className="menu"><button onClick={toggleGroups}>Groups</button></div>
-      <div className="groups" id="groups" style={{display: 'none'}} ><EditGroup qryname={qryname} absData={absData}/></div>
-      <div className="infoArea" id="infoArea" style={{display: 'block'}} ><Grading2 qryname={qryname} absData={absData}/></div>
+      <div className="groups" id="groups" style={{display: 'none'}} ><EditGroup qryname={qryname} absData={absData} groups={groups} /></div>
+      <div className="infoArea" id="infoArea" style={{display: 'block'}} ><Grading2 qryname={qryname} absData={absData} groups={groups} /></div>
       </div>
     </>
   );

@@ -1,12 +1,24 @@
-export default function EditGroup({qryname,absData}) {
+export default function EditGroup({qryname,absData,groups}) {
 
   let students=[]
+  let mygroups=[]
+  if(absData!==null){students=absData[0].students}
+  if(groups!==null){
 
-  if(absData!==null)
-{
-  students=absData[0].students
-}
+    
 
+    // groups.forEach(x=>{
+    //   mygroups.push(x.grouptag)
+    // })
+    // let grp=new Set()
+    // mygroups=Object.values(groups).map((value)=>{
+    //   grp.add(value.grouptag)
+    //   return grp
+    // })
+    
+ console.log(groups)
+  
+  }
 const addStudent =()=>{
   let selStu=document.getElementById('students')
   let selGroup=document.getElementById('sGroup')
@@ -30,6 +42,8 @@ const addStudent =()=>{
     //     selGroup.add(option)
     //   }
     // })
+
+    console.log(mygroups)
 }
 
 const removeStudent=async ()=>{
@@ -46,13 +60,20 @@ const removeStudent=async ()=>{
 
 
   return (
-    <div>
+
       <div>
-        <div>grupos de {qryname!==null?qryname:"Loading..."}</div>
+        <div><h2>{qryname!==null?qryname:"Loading..."} Groups</h2></div>
         <div>
-          <h2>Members</h2>
-          <button>Remove</button>
-          {/* Need to lopp through all the students in the group */}
+          <div>
+            {Object.values(mygroups).map(( group, key)=>{
+
+              return (<p key={key}>{group.grouptag}</p>)
+            })}
+          </div>
+          <div><label htmlFor="groups-tag">Group TAG</label>
+          <input type="text" id="groups-tag"></input>
+          </div>
+
         </div>
         <div className="groups-layout">
           <div>
@@ -80,6 +101,6 @@ const removeStudent=async ()=>{
 
         <button>Edit and Save</button>
       </div>
-    </div>
+
   );
 }

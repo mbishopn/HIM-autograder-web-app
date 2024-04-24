@@ -9,12 +9,17 @@ usersQry = (x) => {
         qry="select distinct a.codernumberdesc, bb.UserName from i10_amcare_vr a,"+
         " (select b.usercode, b.recordid, b.UserDescription,c.username from user_profile b, user_authenticate c"+
         " where b.usercode='100719' and b.RecordID=c.RecordID) bb where a.codernumberdesc=bb.userdescription"
+      break;
   }
-
-
-    // "select distinct codernumberdesc from i10_amcare_vr where codernumber!='' and codernumber='100719' and isAbstractdeleted='n' order by codernumberdesc";
+  // "select distinct codernumberdesc from i10_amcare_vr where codernumber!='' and codernumber='100719' and isAbstractdeleted='n' order by codernumberdesc";
   return qry;
 };
+
+// returns groups created by teachers
+groupsQry= (teacher) =>{
+  qry= "select distinct grouptag from groups where username='"+teacher+"'"
+  return qry;
+}
 
 // returns student names
 studentsQry = () => {
@@ -96,4 +101,4 @@ const abstractsQry = (teacher, pacient, iStu, sName) => {
   return qry;
 };
 
-module.exports = { abstractsQry, studentsQry, usersQry };
+module.exports = { abstractsQry, studentsQry, usersQry, groupsQry };

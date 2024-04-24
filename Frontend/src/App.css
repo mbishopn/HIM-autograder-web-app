@@ -58,6 +58,7 @@
   box-sizing: content-box;
 }
 
+<<<<<<< Updated upstream
 .groups {
   display: none;
 }
@@ -67,3 +68,17 @@
 .groups-buttons {
   padding: 150px 25px;
 }
+=======
+ .groups{
+  display:none;
+ }
+ .groups-layout{
+  display:flex;
+  justify-content: space-around;
+ }
+ .groups-buttons, .groups-buttons div{
+  padding: 60px 15px;
+
+ }
+ 
+>>>>>>> Stashed changes
