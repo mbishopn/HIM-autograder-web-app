@@ -7,7 +7,7 @@ import EditGroup from "./EditGroup"
 import { useNavigate, Link, useLocation } from "react-router-dom";
 import { gradeAbstracts } from "../utilities/compare";
 import { useEffect, useState } from "react";
-import { getGroups } from "../utilities/dbFunctions";
+import { getdbGroups} from "../utilities/dbFunctions";
 
 export default function LandingPage() {
 
@@ -26,10 +26,10 @@ export default function LandingPage() {
 
   useEffect(()=>{
     gradeAbstracts(qryname).then((result)=>setAbsData(result))
-    getGroups(qryname).then((result)=>setGroups(result))
+    getdbGroups(qryname).then((result)=>setGroups(result))
   },[qryname])
-  console.log(qryname)
- console.log(groups)
+  // console.log(qryname)
+ 
 
   return (
     <>
@@ -37,7 +37,7 @@ export default function LandingPage() {
       <div className="title">HIM Autograder</div>
       <div className="mainContainer">
       <div className="menu"><button onClick={toggleGroups}>Groups</button></div>
-      <div className="groups" id="groups" style={{display: 'none'}} ><EditGroup qryname={qryname} absData={absData} groups={groups} /></div>
+      <div className="groups" id="groups" style={{display: 'none'}} ><EditGroup qryname={qryname} absData={absData} groups={groups} setGroups={setGroups}/></div>
       <div className="infoArea" id="infoArea" style={{display: 'block'}} ><Grading2 qryname={qryname} absData={absData} groups={groups} /></div>
       </div>
     </>

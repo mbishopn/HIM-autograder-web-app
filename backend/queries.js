@@ -16,8 +16,20 @@ usersQry = (x) => {
 };
 
 // returns groups created by teachers
-groupsQry= (teacher) =>{
-  qry= "select distinct grouptag from groups where username='"+teacher+"'"
+groupsQry= (teacher, option,groups='') =>{
+  console.log(teacher + " -" + option + " - " + groups)
+  switch (option){
+    case '1':
+      qry= "select groups from groups where username='"+teacher+"'"
+    break;
+    case '2':
+      qry= "insert into groups(username,groups) values('" + teacher +"','" + groups + "') "
+    break;
+    case '3':
+      qry= "update groups set groups='" + groups + "' where username='" + teacher + "'"
+    break;
+  }
+  
   return qry;
 }
 

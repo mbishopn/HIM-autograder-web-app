@@ -22,9 +22,7 @@ create table groups
 (
 	id int IDENTITY(1,1) primary key,
 	username varchar(50),               -- teacher username in med2020
-	grouptag varchar(50),				-- group id tag (optional)
-	studentid varchar(50),				-- student codernumber in med2020 ( they should keep using SLC studentID to assure uniqueness)
-	studentname varchar(50)				-- student name
+	groups varchar(5000)			-- students names array (JSON stringified)
 	)
 
 -- first, let's create the admin user with default password admin
@@ -40,3 +38,13 @@ slcv3.dbo.user_authenticate c
 where b.usercode='100719' 
 and b.RecordID=c.RecordID) bb
 where a.codernumberdesc=bb.userdescription
+
+
+
+
+
+insert into development_usercred.dbo.groups (username) select qryname from development_usercred.dbo.users
+update groups set groups=''
+
+select * from users
+select * from groups

@@ -53,8 +53,22 @@ export const getUsers = async (route,qry)=> {
 // ask API to get an return groups created by teachers
 // you need to pass teacher's username
 
-export const getGroups = async (teacher)=> {
+export const getdbGroups = async (teacher)=> {
     const groups = await client.get('/groups?teacher='+teacher)
+    // console.log(groups.data)
+    return groups.data
+    }
+
+export const setdbGroups = async (teacher,grps)=> {
+    const option='2'
+    const groups = await client.post('/groups',{teacher,option,grps})
+    return groups.data
+    }
+
+export const updatedbGroups = async (teacher,grps)=> {
+    const option='3'
+    const groups = await client.post('/groups',{teacher,option,grps})
+    console.log(groups.data)
     return groups.data
     }
 

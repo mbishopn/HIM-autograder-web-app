@@ -8,33 +8,59 @@ export default function Grading2({
   absData,
   groups
 }) {
-
-  const sPatient=document.getElementById('sPatient')
-  const sStudent=document.getElementById('sStudent')
+  // console.log(absData)
+  // console.log(qryname)
 
   const [selPatient, setSelPatient] = useState("Select Patient");
   const [selStudent, setSelStudent] = useState("Select Student");
   const [selectedItems, setSelectedItems] = useState([]);
   const [enteredNum, setEnteredNum] = useState({});
   const [finalFieldGrade, setFinalFieldGrade] = useState({});
-  const [mygroups,setMyGroups]=useState(new Map())
-  const [first,setFirst]=useState(true)
 
-
- 
   const hSelPatient = (e) => {
     setSelPatient(e.target.value);
   };
   const hSelStudent = (e) => {
     setSelStudent(e.target.value);
   };
-
+  if(groups!=null)
+  {
+    console.log(groups)
+    if(groups[0]!=undefined && groups[0].groups!='')
+    {
+      let tempArr=[]
+      tempArr=JSON.parse(groups[0].groups)
+      tempArr.forEach((x)=>{
+        mygroups.set(JSON.parse(x)[0],new Set(JSON.parse(x)[1]))
+      })
+      console.log(mygroups)
+      groupslist.innerHTML=''
+      let option=document.createElement('option')
+      option.value='--new group--'
+      option.text='--new group--'
+      groupslist.add(option)
+      let temp=new Set(students)
+      mygroups.forEach((value,key)=>{
+        let option=document.createElement('option')
+        option.value=key
+        option.text=key
+        groupslist.add(option)
+        console.log(students.length)
+        value.forEach((x)=>{  //--- llena el outGroup sin los alumnos ya en grupos
+          temp.delete(x)
+        })
+      })
+      students=[]
+      temp.forEach(x=>students.push(x))
+      console.log(temp)
+      console.log(students)
+    }
+  }
 
  
   let formatData = null;
   let students = [];
   let patients = [];
-  let grps=[]
   // const [absData,setAbsData]=useState(null)
 
   // useEffect(()=>{
@@ -46,16 +72,7 @@ export default function Grading2({
     const gradedAbs = absData[0].gradedAbs;
     students = absData[0].students;
     patients = absData[0].patients;
-//------------------------------------------------------------------------------
-    let tempArr=[]
-    tempArr=JSON.parse(groups[0].groups)
-    tempArr.forEach((x)=>{
-      grps.push(JSON.parse(x)[0])
-      mygroups.set(JSON.parse(x)[0],new Set(JSON.parse(x)[1]))
-    })
-console.log(grps)
-console.log(mygroups)
-//---------------------------------------------------------------------------------
+
     // hooks and handlers functions for dropdown lists selection
 
     //  this function will format the data comming from data.gradedAbs array according to selections made with dropdown lists
@@ -244,51 +261,14 @@ console.log(mygroups)
     };
   }
 
-// select to create a new group or show an existing one ----------------------------------------------------------------------
-const showSelGroup=(e)=>
-{
-
-  students=Array.from(mygroups.get(e.target.value))
-    console.log(students)
-  // inGroup.innerHTML=''
-  // if(e.target.value==="--new group--")
-  //   {
-  //     groupTag.value="Identify this Group"
-  //     setNumIg(inGroup.options.length)
-  //     setAddEditBtn('add group')
-  //     setDelBtn(false)
-  //   }
-  // else
-  //   {
-  //     groupTag.value=e.target.value
-  //     setAddEditBtn('update group')
-  //     setDelBtn(true)
-  //     mygroups.get(groupTag.value).forEach((x)=>{
-  //       console.log(x)
-  //       let option=document.createElement('option')
-  //       option.text=x
-  //       option.value=x
-  //       inGroup.add(option)
-  //     })
-  //     setNumIg(inGroup.options.length)
-    
-  //   }
-}
-
-//----------------------------- RENDERING --------------------------------------------
-
-
-  return absData !== null && mygroups !==null? (
+  // return <>
+  // {absData!==null?absData[0].gradedAbs.length:"Loading Abstr..."}
+  // </>
+  return absData !== null ? (
     <div>
-      <select name="sGroup" id="sGroup" onChange={showSelGroup}>
+      <select name="sGroup" id="sGroup">
         <option value="Select Group">Select Group</option>
-        {Object.values(grps).map((name, key) => {
-          return (
-            <option key={key} value={name}>
-              {name}
-            </option>
-          );
-        })}
+        {/* Need to lopp through all the groups in the system */}
       </select>
       <select name="sPatient" id="sPatient" onChange={hSelPatient}>
         <option value="Select Patient">Select Patient</option>
@@ -303,7 +283,6 @@ const showSelGroup=(e)=>
       <select name="sStudent" id="sStudent" onChange={hSelStudent}>
         <option value="Select Student">Select Student</option>
         {Object.values(students).map((name, key) => {
-          console.log
           return (
             <option key={key} value={name}>
               {name}

@@ -44,14 +44,26 @@ const result = await sql.dbConn(usersQry(qry),db)
 
 //------------------ GROUPS ROUTE -----------------------------------
 server.get("/groups", async (request, response) => {
-  let{teacher}=request.query
+  const{teacher}=request.query
   console.log(teacher)
-  await sql.dbConn(groupsQry(teacher),"development_usercred")
+  await sql.dbConn(groupsQry(teacher,'1'),"development_usercred")
    .then((result)=>{
     console.log(result)
     response.send(result)
   })
   });
+
+//--------------------- SAVE/UPDATE GROUPS ROUTE ----------------------------
+
+server.post("/groups", async (request, response) => {
+  console.log(request.body)
+  const {teacher,option,grps}=request.body
+  await sql.dbConn(groupsQry(teacher,option,grps),"development_usercred")
+  .then((result)=>{
+  console.log(result)
+  response.send("Groups for "+teacher+" have been updated")
+  })
+});
 
 //------------------ STUDENTS ROUTE -----------------------------------
 server.get("/students", async (request, response) => {
