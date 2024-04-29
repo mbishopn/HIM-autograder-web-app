@@ -11,6 +11,7 @@ export default function Grading2({
 }) {
 
   const sPatient=document.getElementById('sPatient')
+  
 
   const [selPatient, setSelPatient] = useState("Select Patient");
   const [selStudent, setSelStudent] = useState("Select Student");
@@ -19,7 +20,6 @@ export default function Grading2({
   const [finalFieldGrade, setFinalFieldGrade] = useState({});
   const [mygroups,setMyGroups]=useState(new Map())
   const [first,setFirst]=useState(true)
-  const [activeStudents,setActiveStudents]=useState([])
 
   const hSelPatient = (e) => {
     setSelPatient(e.target.value);
@@ -28,6 +28,8 @@ export default function Grading2({
     setSelStudent(e.target.value);
   };
 
+
+ 
   let formatData = null;
   let students = [];
   let patients = [];
@@ -36,11 +38,6 @@ export default function Grading2({
   if (absData !== null && groups!==null) {
     const gradedAbs = absData[0].gradedAbs;
     students = absData[0].students;
-    if(first)
-    {
-      setActiveStudents(students);setFirst(false)
-    }
-    
     patients = absData[0].patients;
 //------------------------------------------------------------------------------
     let tempArr=[]
@@ -94,13 +91,11 @@ export default function Grading2({
         case sp !== "Select Patient" && ss === "Select Student":
           ss = "";
           name = sp.split(" ");
-          
+
           gradedAbs.forEach((abs) => {
-            activeStudents.forEach((student)=>{
-              // console.log(abs["CoderNumberDesc"][2].toUpperCase())
             if (
               abs["FirstName"][1] === name[0] &&
-              abs["LastName"][1] === name[1] && abs["CoderNumberDesc"][2].toUpperCase()===student
+              abs["LastName"][1] === name[1]
             ) {
               // consider only currently selected PATIENT abstracts
               let p1 = "Student Name";
@@ -118,8 +113,6 @@ export default function Grading2({
               data.push([abs["CoderNumberDesc"][2], mark, maxMark]);
               mark = 0;
             }
-            })
-
           });
 
           // console.log(counter);
@@ -249,13 +242,18 @@ export default function Grading2({
 const showSelGroup=(e)=>
 {
   const sStudent=document.getElementById('sStudent')
-  if(e.target.value=='Select Group')
-    {students=absData[0].students;setActiveStudents(students);loadSelect(sStudent,students)}
+  if(e.target.value=='Select Group'||e.target.value==null)
+  {students=absData[0].students}
   else
-    {students=Array.from(mygroups.get(e.target.value));setActiveStudents(students);loadSelect(sStudent,students)}
+  {
+    students=Array.from(mygroups.get(e.target.value))
+    loadSelect(sStudent,students)
+  }
+  
 }
 
 const loadSelect=(select, data)=>{
+  
   select.innerHTML=''
   let option=document.createElement('option')
   option.text='Select Student'
@@ -297,7 +295,7 @@ const loadSelect=(select, data)=>{
       <select name="sStudent" id="sStudent"  onChange={hSelStudent}>
         <option value="Select Student">Select Student</option>
         {Object.values(students).map((name, key) => {
-          // console.log(students)
+          console.log
           return (
             <option key={key} value={name}>
               {name}

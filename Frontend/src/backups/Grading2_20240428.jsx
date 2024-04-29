@@ -3,7 +3,6 @@ import ShowData from "./showData";
 import { useLocation } from "react-router-dom";
 import { gradeAbstracts } from "../utilities/compare";
 
-
 export default function Grading2({
   qryname,
   absData,
@@ -11,6 +10,7 @@ export default function Grading2({
 }) {
 
   const sPatient=document.getElementById('sPatient')
+  const sStudent=document.getElementById('sStudent')
 
   const [selPatient, setSelPatient] = useState("Select Patient");
   const [selStudent, setSelStudent] = useState("Select Student");
@@ -19,8 +19,9 @@ export default function Grading2({
   const [finalFieldGrade, setFinalFieldGrade] = useState({});
   const [mygroups,setMyGroups]=useState(new Map())
   const [first,setFirst]=useState(true)
-  const [activeStudents,setActiveStudents]=useState([])
 
+
+ 
   const hSelPatient = (e) => {
     setSelPatient(e.target.value);
   };
@@ -28,32 +29,35 @@ export default function Grading2({
     setSelStudent(e.target.value);
   };
 
+
+ 
   let formatData = null;
   let students = [];
   let patients = [];
   let grps=[]
+  // const [absData,setAbsData]=useState(null)
 
-  if (absData !== null && groups!==null) {
+  // useEffect(()=>{
+  //   gradeAbstracts(qryname).then((result)=>setAbsData(result))
+  // },[qryname])
+
+  //  console.log(absData)
+  if (absData !== null) {
     const gradedAbs = absData[0].gradedAbs;
     students = absData[0].students;
-    if(first)
-    {
-      setActiveStudents(students);setFirst(false)
-    }
-    
     patients = absData[0].patients;
+    console.log(students)
 //------------------------------------------------------------------------------
     let tempArr=[]
-    if(groups[0].groups!=='')
-    {
-      tempArr=JSON.parse(groups[0].groups)
-      tempArr.forEach((x)=>{
+    tempArr=JSON.parse(groups[0].groups)
+    tempArr.forEach((x)=>{
       grps.push(JSON.parse(x)[0])
       mygroups.set(JSON.parse(x)[0],new Set(JSON.parse(x)[1]))
     })
-    }
-
+console.log(grps)
+console.log(mygroups)
 //---------------------------------------------------------------------------------
+    // hooks and handlers functions for dropdown lists selection
 
     //  this function will format the data comming from data.gradedAbs array according to selections made with dropdown lists
     formatData = (sp, ss) => {
@@ -94,13 +98,11 @@ export default function Grading2({
         case sp !== "Select Patient" && ss === "Select Student":
           ss = "";
           name = sp.split(" ");
-          
+
           gradedAbs.forEach((abs) => {
-            activeStudents.forEach((student)=>{
-              // console.log(abs["CoderNumberDesc"][2].toUpperCase())
             if (
               abs["FirstName"][1] === name[0] &&
-              abs["LastName"][1] === name[1] && abs["CoderNumberDesc"][2].toUpperCase()===student
+              abs["LastName"][1] === name[1]
             ) {
               // consider only currently selected PATIENT abstracts
               let p1 = "Student Name";
@@ -118,8 +120,6 @@ export default function Grading2({
               data.push([abs["CoderNumberDesc"][2], mark, maxMark]);
               mark = 0;
             }
-            })
-
           });
 
           // console.log(counter);
@@ -248,33 +248,48 @@ export default function Grading2({
 // select to create a new group or show an existing one ----------------------------------------------------------------------
 const showSelGroup=(e)=>
 {
-  const sStudent=document.getElementById('sStudent')
   if(e.target.value=='Select Group')
-    {students=absData[0].students;setActiveStudents(students);loadSelect(sStudent,students)}
+  {
+    students = absData[0].students;
+    console.log(students)
+  }
   else
-    {students=Array.from(mygroups.get(e.target.value));setActiveStudents(students);loadSelect(sStudent,students)}
-}
+  {
+    students=Array.from(mygroups.get(e.target.value))
+    console.log(students)
+  }
 
-const loadSelect=(select, data)=>{
-  select.innerHTML=''
-  let option=document.createElement('option')
-  option.text='Select Student'
-  option.text='Select Student'
-  select.add(option)
-  data.forEach((x)=>{
-    let option=document.createElement('option')
-    option.text=x
-    option.text=x
-    select.add(option)
-  })
+  // inGroup.innerHTML=''
+  // if(e.target.value==="--new group--")
+  //   {
+  //     groupTag.value="Identify this Group"
+  //     setNumIg(inGroup.options.length)
+  //     setAddEditBtn('add group')
+  //     setDelBtn(false)
+  //   }
+  // else
+  //   {
+  //     groupTag.value=e.target.value
+  //     setAddEditBtn('update group')
+  //     setDelBtn(true)
+  //     mygroups.get(groupTag.value).forEach((x)=>{
+  //       console.log(x)
+  //       let option=document.createElement('option')
+  //       option.text=x
+  //       option.value=x
+  //       inGroup.add(option)
+  //     })
+  //     setNumIg(inGroup.options.length)
+    
+  //   }
 }
 
 //----------------------------- RENDERING --------------------------------------------
 
 
   return absData !== null && mygroups !==null? (
-    <div>{students.length>0?students.forEach(x=><p>{x}</p>):""}
-       <select name="sGroup" id="sGroup" onChange={showSelGroup}>
+    <div>
+      <select name="sGroup" id="sGroup" onChange={showSelGroup}>
         <option value="Select Group">Select Group</option>
         {Object.values(grps).map((name, key) => {
           return (
@@ -294,10 +309,10 @@ const loadSelect=(select, data)=>{
           );
         })}
       </select>
-      <select name="sStudent" id="sStudent"  onChange={hSelStudent}>
+      <select name="sStudent" id="sStudent" onChange={hSelStudent}>
         <option value="Select Student">Select Student</option>
         {Object.values(students).map((name, key) => {
-          // console.log(students)
+          console.log
           return (
             <option key={key} value={name}>
               {name}
