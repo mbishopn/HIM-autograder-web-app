@@ -1,5 +1,8 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import ShowData from "./showData";
+import { useLocation } from "react-router-dom";
+import { gradeAbstracts } from "../utilities/compare";
+
 
 export default function Grading2({
   qryname,
@@ -7,21 +10,22 @@ export default function Grading2({
   groups
 }) {
 
+  const sPatient=document.getElementById('sPatient')
 
   const [selPatient, setSelPatient] = useState("Select Patient");
   const [selStudent, setSelStudent] = useState("Select Student");
   const [selectedItems, setSelectedItems] = useState([]);
   const [enteredNum, setEnteredNum] = useState({});
+  const [finalFieldGrade, setFinalFieldGrade] = useState({});
   const [mygroups,setMyGroups]=useState(new Map())
   const [first,setFirst]=useState(true)
   const [activeStudents,setActiveStudents]=useState([])
-  let wrongAnswers=[]
 
   const hSelPatient = (e) => {
-   setSelPatient(e.target.value);
+    setSelPatient(e.target.value);
   };
   const hSelStudent = (e) => {
-      setSelStudent(e.target.value);
+    setSelStudent(e.target.value);
   };
 
   let formatData = null;
@@ -38,7 +42,7 @@ export default function Grading2({
     }
     
     patients = absData[0].patients;
-    //------------------------------------------------------------------------------
+//------------------------------------------------------------------------------
     let tempArr=[]
     if(groups[0].groups!=='')
     {
@@ -49,7 +53,7 @@ export default function Grading2({
     })
     }
 
-    //---------------------------------------------------------------------------------
+//---------------------------------------------------------------------------------
 
     //  this function will format the data comming from data.gradedAbs array according to selections made with dropdown lists
     formatData = (sp, ss) => {
@@ -93,6 +97,7 @@ export default function Grading2({
           
           gradedAbs.forEach((abs) => {
             activeStudents.forEach((student)=>{
+              // console.log(abs["CoderNumberDesc"][2].toUpperCase())
             if (
               abs["FirstName"][1] === name[0] &&
               abs["LastName"][1] === name[1] && abs["CoderNumberDesc"][2].toUpperCase()===student
@@ -107,17 +112,6 @@ export default function Grading2({
                 if (x[3] !== "") {
                   maxMark++;
                   mark += x[3];
-                  
-                  if(x[3]<=0)
-                  {
-                    if(wrongAnswers.find((field)=>field.field===x[0]))
-                    {
-                      wrongAnswers[wrongAnswers.findIndex((field)=>field.field===x[0])].count++
-                    }
-                     else
-                     wrongAnswers.push({field:x[0],count:1})
-                  }
-
                 } // if field must be marked, add it to maximun marks and student marks
               });
               counter++;
@@ -125,9 +119,11 @@ export default function Grading2({
               mark = 0;
             }
             })
-          });
-          wrongAnswers.sort((a,b)=>b.count-a.count)
 
+          });
+
+          // console.log(counter);
+          // data=''
           break;
         // ------------------------------------------- format summary by student ---------------------------------------------------
         case sp === "Select Patient" && ss !== "Select Student":
@@ -213,6 +209,16 @@ export default function Grading2({
                     x[6] = enteredNum[x[0]] * x[3]; //else multiply the grade by the multiplier
                   }
 
+                  // console.log(x[3]);
+                  // console.log(enteredNum);
+                  // console.log(enteredNum[selectedItems[0]] * x[3]);
+                  // selectedItems.map((y) => {
+                  // console.log(enteredNum[y] * x[3]);
+                  // setFinalFieldGrade(
+                  //   (finalFieldGrade[y] = parseInt(enteredNum[y] * x[3]))
+                  // );
+                  // console.log(finalFieldGrade);
+                  // });
                 } // if field must be marked, add it to maximun marks and student marks
 
                 data.push([x[4], x[0], x[1], x[2], x[3], x[5], x[6]]);
@@ -243,30 +249,12 @@ export default function Grading2({
 const showSelGroup=(e)=>
 {
   const sStudent=document.getElementById('sStudent')
-  const sPatient=document.getElementById('sPatient')
   if(e.target.value=='Select Group')
-    {students=absData[0].students;setActiveStudents(students);loadSelect(sStudent,students);loadSelect(sPatient,absData[0].patients)}
+    {students=absData[0].students;setActiveStudents(students);loadSelect(sStudent,students)}
   else
-    {students=Array.from(mygroups.get(e.target.value));setActiveStudents(students);loadSelect(sStudent,students);loadSelect(sPatient,groupPatients(students))}
-    setSelStudent(sStudent.options[0].text);console.log(sStudent.options[0])
+    {students=Array.from(mygroups.get(e.target.value));setActiveStudents(students);loadSelect(sStudent,students)}
 }
 
-// ------------ filter patient names by group -------------
-const groupPatients=(students)=>
-{
-  let gPatients=new Set()
-  absData[0].gradedAbs.forEach((abs)=>{
-    students.forEach((x)=>{
-      if (abs["CoderNumberDesc"][2].toUpperCase() === x)
-      {
-        gPatients.add(abs['FirstName'][1]+" "+abs['LastName'][1])
-      }
-    })
-  })
-  return gPatients
-}
-
-//  ------------ helper function to load select elements with data provided ---------------
 const loadSelect=(select, data)=>{
   select.innerHTML=''
   let option=document.createElement('option')
@@ -279,56 +267,6 @@ const loadSelect=(select, data)=>{
     option.text=x
     select.add(option)
   })
-}
-
-// ------------- shows/hides Wrong Answer Stats ----------------
-const toggleWASbtn=(e)=>{
-  let wastats=document.getElementById('wastats')
-  if(wastats.style.display=='none')
-  {
-     wastats.style.display='block', e.target.textContent="Hide wrong stats"
-  }
-  else
-  {
-    wastats.style.display='none', e.target.textContent="wrong stats"
- }
-  console.log(selPatient)
-}
-
-//----------------  exporting to csv still needs to be refined, I just added this to get an idea -------------------------------
-function downloadJSONAsCSV(jsonData) {
-  // Fetch JSON data from the endpoint
-console.log(jsonData)
-if (jsonData!==null)
-{
-            // Convert JSON data to CSV
-          let csvData = jsonToCsv(jsonData); // Add .items.data
-          // Create a CSV file and allow the user to download it
-          let blob = new Blob([csvData], { type: 'text/csv' });
-          let url = window.URL.createObjectURL(blob);
-          let a = document.createElement('a');
-          a.href = url;
-          a.download = 'data.csv';
-          document.body.appendChild(a);
-          a.click();
-}
-
-}
-function jsonToCsv(jsonData) {
-  let csv = '';
-  // Get the headers
-  let headers = Object.keys(jsonData);
-  csv += headers.join(',') + '\n';
-  // Add the data
-  jsonData.forEach(function (row) {
-      let data = headers.map(header => JSON.stringify(row[header])).join(','); // Add JSON.stringify statement
-      csv += data + '\n';
-  });
-  return csv;
-}
-
-const handleExport=()=>{
-  downloadJSONAsCSV(formatData(selPatient,selStudent)[1])
 }
 
 //----------------------------- RENDERING --------------------------------------------
@@ -359,6 +297,7 @@ const handleExport=()=>{
       <select name="sStudent" id="sStudent"  onChange={hSelStudent}>
         <option value="Select Student">Select Student</option>
         {Object.values(students).map((name, key) => {
+          // console.log(students)
           return (
             <option key={key} value={name}>
               {name}
@@ -368,16 +307,12 @@ const handleExport=()=>{
       </select>
       <br></br>
       <div className="Searched_Results">
-        <h3>{formatData(selPatient, selStudent)[0]}<button id='wasBtn' onClick={toggleWASbtn}>wrong stats</button></h3>
-        {/* <div className="wastats" id="wastats" style={{display: 'none'}}><WaStats patient={wastats}/></div> */}
-        <div className="wastats" id="wastats" style={{display:'invisible'}}>
-         <div>{Object.values(wrongAnswers).map((value,key)=>{return (<p key={key}>{value.field}:&emsp;{value.count}</p>)})}</div>
-        </div>
+        <h3>{formatData(selPatient, selStudent)[0]}</h3>
         <h3>
           <ShowData data={formatData(selPatient, selStudent)[1]} />
         </h3>
       </div>
-      <button onClick={handleExport} className="Export">Export to CSV</button>
+      <button className="Export">Export to CSV</button>
       <button className="Clear">Clear Results</button>
       <button className="Back">Back</button>
     </div>

@@ -34,6 +34,7 @@
   width: 98%;
   align-self: center;
   padding-top: 25px;
+  justify-content: center;
 }
 
 .title {
@@ -44,6 +45,7 @@
   width: 150px;
   height: 150px;
 }
+
 .logoHIM-navbar {
   width: 45px;
   height: 55px;

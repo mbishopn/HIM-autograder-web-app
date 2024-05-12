@@ -50,34 +50,34 @@ const abstractsQry = (teacher, pacient, iStu, sName) => {
   qry =
     "select distinct a.zzAbstractLink,a.CoderNumberDesc,a.codernumber," +
     //  /*  ------- abstract headers -------*/
-    "a.ChartNumber,a.RegistrationNumber,convert(date,a.DispositionDate) as DispositionDate,convert(char(5),convert(time,a.DispositionTime)) as DispositionTime," +
+    "a.ChartNumber,a.RegistrationNumber,a.DispositionDate,convert(char(5),convert(time,a.DispositionTime)) as DispositionTime," +
     "a.DispositionTimeUnknown,a.InstitutionNumberDesc,a.LastName,a.FirstName,a.GenderDesc," +
-    "convert(date,a.BirthDate) as BirthDate,a.ResponsiblityForPayment,a.PostalCode,a.ArrivalModeDesc,convert(date,a.ArrivalDate) as ArrivalDate," +
+    "a.BirthDate,a.ResponsiblityForPayment,a.PostalCode,a.ArrivalModeDesc,a.ArrivalDate," +
     "convert(char(5),convert(time,a.ArrivalTime)) as ArrivalTime,a.InstitutionFromDesc,a.MISCodeDesc,a.ContactModeDesc,a.AdmitbyAmbulanceDesc," +
-    "convert(date,a.AmbulanceArrivalDate) as AmbulanceArrivalDate,convert(char(5),convert(time,a.AmbulanceArrivalTime)) as AmbulanceArrivalTime," +
+    "a.AmbulanceArrivalDate,convert(char(5),convert(time,a.AmbulanceArrivalTime)) as AmbulanceArrivalTime," +
     "a.AmbulanceArrivalTimeUnknown," +
-    "convert(date,a.AmbulanceTransferCareDate) as AmbulanceTransferCareDate,convert(char(5),convert(time,a.AmbulanceTransferCareTime)) as AmbulanceTransferCareTime," +
+    "a.AmbulanceTransferCareDate,convert(char(5),convert(time,a.AmbulanceTransferCareTime)) as AmbulanceTransferCareTime," +
     "a.AmbulanceTransferCareTimeUnknown,a.ReferredFromDesc,a.TriageLevelDesc," +
-    "convert(date,a.TriageDate) as TriageDate,convert(char(5),convert(time,a.TriageTime)) as TriageTime," +
-    "a.TriageTimeUnknown,convert(date,a.AssessmentDate) as AssessmentDate," +
+    "a.TriageDate,convert(char(5),convert(time,a.TriageTime)) as TriageTime," +
+    "a.TriageTimeUnknown,a.AssessmentDate," +
     "convert(char(5),convert(time,a.AssessmentTime)) as AssessmentTime,a.AssessmentTimeUnknown," +
-    "convert(date,a.DateLeftER) as DateLeftER,convert(char(5),convert(time,a.TimeLeftER)) as TimeLeftER," +
+    "a.DateLeftER,convert(char(5),convert(time,a.TimeLeftER)) as TimeLeftER," +
     "a.TimeLeftERUnknown,a.DischargeDispositionDesc,a.ReferredToDesc,a.InstitutionToDesc," +
     /*------------ other fields -------------*/
     " a.TransfusionGiven,a.RedBloodCell,a.Platelets,a.Plasma,a.Albumin,a.OtherBlood,a.AutoTransfusion," +
     //  /*  ------- abstract consult -------*/
-    " c.ConsultOccurrence,c.Consultnumberdesc,c.ConsultServiceDesc,convert(date,c.ConsultRequestDate) as ConsultRequestDate," +
+    " c.ConsultOccurrence,c.Consultnumberdesc,c.ConsultServiceDesc,c.ConsultRequestDate," +
     " convert(char(5),convert(time,c.ConsultRequestTime)) as ConsultRequestTime,c.ConsultArrivalTimeUnknown," +
-    " convert(date,c.ConsultArrivalDate) as ConsultArrivalDate,convert(char(5),convert(time,c.ConsultArrivalTime)) as ConsultArrivalTime, " +
+    " c.ConsultArrivalDate,convert(char(5),convert(time,c.ConsultArrivalTime)) as ConsultArrivalTime, " +
     //  /*  ------- abstract providers -------*/
     " p.ProviderOccurrence,p.ProviderNumber,p.ProviderSpecialtyDesc,p.ProviderTypeDesc," +
     //  /*  ------- abstract diagnosis -------*/
     " d.DiagnosisOccurrence,d.diagnosisprefix,d.diagnosiscode,d.diagnosissuffix,d.diagnosistype," +
     //  /*  ------- abstract intervention -------*/
-    " i.InterventionOccurrence,convert(date,i.InterventionDate) as InterventionDate,i.InterventionCode,i.InterventionSuffixDesc," +
+    " i.InterventionOccurrence,i.InterventionDate,i.InterventionCode,i.InterventionSuffixDesc," +
     " i.InterventionAttributeStatus,i.InterventionAttributeLocation,i.InterventionAttributeExtent," +
-    " i.InterventionProviderNumberDesc,i.InterventionProviderSpecialty,convert(date,i.IntervDateIn) as IntervDateIn," +
-    " convert(char(5),convert(time,i.InterventionTimeIn)) as InterventionTimeIn,convert(date,i.IntervDateOut) as IntervDateOut," +
+    " i.InterventionProviderNumberDesc,i.InterventionProviderSpecialty,i.IntervDateIn," +
+    " convert(char(5),convert(time,i.InterventionTimeIn)) as InterventionTimeIn,i.IntervDateOut," +
     " convert(char(5),convert(time,i.InterventionTimeOut)) as InterventionTimeOut,i.InterventionLocation,i.AnesthetistIDDesc,i.AnestheticTechniqueDesc" +
     " from i10_Amcare_vr a " +
     " join i10_amcare_and_consult_vr c on a.zzAbstractlink=c.zzabstractlink and a.CoderNumber=c.codernumber and a.FullName=c.FullName " +

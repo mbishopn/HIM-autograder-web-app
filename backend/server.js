@@ -204,6 +204,23 @@ server.get("/abstracts", async (request, response) =>
                   abrep=false
                   first=false             
                 }
+            // ----------- dealing with dates ---------------
+            // can't understand yet why if I use field as date type I get 1 day before
+            // instead dates are handled as strings
+       
+            if(prop.includes('Date') && e[prop]!==null)
+            {
+               e[prop]=e[prop].toISOString()
+              if(prop.includes('Birth'))
+              {
+                e[prop]=e[prop].substring(0,10).replaceAll('-','/')
+              }
+              else
+              {
+                e[prop]=e[prop].substring(5,10).replaceAll('-','/')
+              }
+            }
+
 
             switch (true)   // store the subsection data in the right place
             {

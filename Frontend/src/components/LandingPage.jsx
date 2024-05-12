@@ -4,7 +4,7 @@ import Grading2 from "./Grading2";
 import EditGroup from "./EditGroup"
 
 // libraries required
-import { useNavigate, Link, useLocation } from "react-router-dom";
+import { useLocation } from "react-router-dom";
 import { gradeAbstracts } from "../utilities/compare";
 import { useEffect, useState } from "react";
 import { getdbGroups} from "../utilities/dbFunctions";
