@@ -1,5 +1,4 @@
-import { useEffect, useState } from "react"
-import { json } from "react-router-dom"
+import { useState } from "react"
 import { updatedbGroups } from "../utilities/dbFunctions"
 
 export default function EditGroup({qryname,absData,groups,setGroups}) {
@@ -38,10 +37,9 @@ const sortSelectContent=(select)=>{
     option.value=student
     select.add(option)
   })
-}
+} // ------------------------------------------------------------------------------------
 
   if(groups!==null && first && absData!==null){
-    // console.log(groups)
     if(groups[0]!=undefined && groups[0].groups!='')
     {
       let tempArr=[]
@@ -49,7 +47,6 @@ const sortSelectContent=(select)=>{
       tempArr.forEach((x)=>{
         mygroups.set(JSON.parse(x)[0],new Set(JSON.parse(x)[1]))
       })
-      // console.log(mygroups)
       groupslist.innerHTML=''
       let option=document.createElement('option')
       option.value='--new group--'
@@ -61,47 +58,47 @@ const sortSelectContent=(select)=>{
         option.value=key
         option.text=key
         groupslist.add(option)
-        // console.log(students.length)
-        value.forEach((x)=>{  //--- llena el outGroup sin los alumnos ya en grupos
+        value.forEach((x)=>{  
           temp.delete(x)
         })
       })
       students=[]
       temp.forEach(x=>students.push(x))
-      // console.log(temp)
-      // console.log(students)
     }
-
       setFirst(false)
-
       outGroup.innerHTML=''
       students.forEach((x)=>{
-      
       let option=document.createElement('option')
       option.value=x
       option.text=x
       outGroup.add(option)
       })
-
       setNumOg(outGroup.options.length)
       sortSelectContent(outGroup)
-
-
   }
 
 // select to create a new group or show an existing one ----------------------------------------------------------------------
 const showSelGroup=(e)=>
 {
-
-  if(inGroup.options.length!=0)
+  if(inGroup.options.length!=0)  // undo whatever it's been done and not save yet
   {
-    for(let ii=inGroup.options.length-1;ii>=0;ii--)
+    if(mygroups.has(groupTag.value))
     {
-      if((mygroups.get(groupTag.value)).has(inGroup.options[ii].text))
-          {inGroup.remove(ii)}
+      for(let ii=inGroup.options.length-1;ii>=0;ii--)
+        {
+            if((mygroups.get(groupTag.value)).has(inGroup.options[ii].text))
+              {inGroup.remove(ii)}
+        }
+        for(let ii=outGroup.options.length-1;ii>=0;ii--)
+        {
+            if((mygroups.get(groupTag.value)).has(outGroup.options[ii].text))
+              {outGroup.remove(ii)}
+        } 
     }
+
     moveStudent(inGroup,outGroup,true)
   }
+  // --------- undo complete ---------------------------------------------
   inGroup.innerHTML=''
   if(e.target.value==="--new group--")
     {
@@ -116,14 +113,12 @@ const showSelGroup=(e)=>
       setAddEditBtn('update group')
       setDelBtn(true)
       mygroups.get(groupTag.value).forEach((x)=>{
-        console.log(x)
         let option=document.createElement('option')
         option.text=x
         option.value=x
         inGroup.add(option)
       })
       setNumIg(inGroup.options.length)
-    
     }
 }
 
@@ -151,56 +146,35 @@ const moveStudent =(source, target, all=false)=>{
   { // moves all options from source to target select
     for (ii;ii>=0;ii--)
     {
-      // console.log(document.getElementById('outGroup').value)
-      if(document.getElementById('outGroup').value==source.options[ii])
-       {alert("elemento repetido")}  
+      if(document.getElementById('outGroup').value===source.options[ii])
+       {alert("repeated element")}  
       let option=document.createElement('option')
       option.text=source.options[ii].text
       target.add(option)
     }
   }
-
   setNumIg(inGroup.options.length)
   setNumOg(outGroup.options.length)
   sortSelectContent(target)
 }
 
-
-
 // -------------------------------- saving all groups created and store them in db --------------------------------------- 
 const saveGroup=()=>{
-
   let tempArr=[]
-  mygroups.forEach((value,key)=>{
+  mygroups.forEach((value,key)=>
+  {
     tempArr.push(JSON.stringify([key,Array.from(value)]))
   })
   let strToDB=JSON.stringify(tempArr)
-
-  // console.log("a la BD: "+ cacadena)
   updatedbGroups(qryname,strToDB)
   setGroups([{groups:strToDB}])
-// -----------------------------------------------------------------
-
-// let map=new Map();
-// let objcadena=[]
-//   objcadena=JSON.parse(cacadena)
-//   console.log(objcadena)
-//   objcadena.forEach((x)=>{
-//     console.log()
-//     map.set(JSON.parse(x)[0],new Set(JSON.parse(x)[1]))
-//   })
-//   console.log(map)
-
 }
 
 // adding/editing a group --------------------------------------------------------------------------------------------
 const addGroup=()=>{
-  let students=new Set()
-
+  let gstudents=new Set()
   if (groupTag.value!=='Identify this Group'&&groupTag.value!==''&&inGroup.options.length!==0 )
   {
-      // console.log(groupslist.options[groupslist.selectedIndex].value)
-      // console.log(groupTag.value)
     if (groupslist.options[groupslist.selectedIndex].value!=groupTag.value && groupslist.options[groupslist.selectedIndex].value!='--new group--')
     {
       alert("Can't change group name already defined, if you are trying to create a new group select '--new group--' from dropdown list")
@@ -212,34 +186,25 @@ const addGroup=()=>{
       {
         let option=document.createElement('option')
         option.text=groupTag.value
-        // option.value=groupTag.value
-        // console.log(mygroups.keys())
         groupslist.add(option)
         sortSelectContent(groupslist)
-
       }
-      else
-      {
-        students=mygroups.get(groupTag.value)
-      }
-      students.clear()
       Object.values(inGroup.options).map((values)=>{
-        students.add(values.text)
+        gstudents.add(values.text)
       })
-      mygroups.set(groupTag.value,students)
+      mygroups.set(groupTag.value,gstudents)
       inGroup.innerHTML=''
       groupTag.value=''
       setNumIg(inGroup.options.length)
       groupslist.value="--new group--"
+      groupTag.value='Identify this Group'
+      setAddEditBtn('add group')
+      setDelBtn(false)
     }
-
-    
   }
   else{
     alert("Group must have an ID and at least 1 student")
   }
-
-
 }
 
 const delGroup=()=>{
@@ -252,7 +217,6 @@ const delGroup=()=>{
     groupslist.remove(groupslist.selectedIndex)
   }
 }
-
 
   return (
 
@@ -275,9 +239,6 @@ const delGroup=()=>{
           <div>
           <p><label>All students list ({numOg===null?students.length:numOg} students)</label></p>
             <select name='outGroup' id='outGroup' multiple size="20">
-              {/* {Object.values(students).map((value,key)=>{
-              return <option key={key} value={value}>{value}</option>
-            })} */}
             </select>
           </div>
           <div className="groups-buttons">
@@ -290,7 +251,6 @@ const delGroup=()=>{
             </select>          
           </div>          
         </div>
-
         <button onClick={saveGroup}>Save Groups</button>
       </div>
 

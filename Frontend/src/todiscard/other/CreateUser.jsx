@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { createUser } from "../utilities/dbFunctions";
+import { createUser } from "../../utilities/dbFunctions";
 
 export default function CreateUser() {
 

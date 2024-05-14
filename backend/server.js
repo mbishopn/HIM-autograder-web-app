@@ -1,28 +1,28 @@
-const express = require("express");
-const { request, response } = require("http");
-const server = express();
+const express = require("express")
+const { request, response } = require("http")
+const server = express()
 
-const cors = require("cors");
-require("dotenv/config");
-const port = 3000;
-const bcrypt = require("bcrypt");
-const jwt = require("jsonwebtoken");
+const cors = require("cors")
+require("dotenv/config")
+const port = 3000
+const bcrypt = require("bcrypt")
+const jwt = require("jsonwebtoken")
 
-const sql=require('./conn');
-const { abstractsQry,studentsQry,usersQry,groupsQry } = require("./queries");
-server.use(express.urlencoded({ extended: false }));
-server.use(express.json());
-server.use(cors());
+const sql=require('./conn')
+const { abstractsQry,studentsQry,usersQry,groupsQry } = require("./queries")
+server.use(express.urlencoded({ extended: false }))
+server.use(express.json())
+server.use(cors())
 
 
 // ---------- LISTENING APP REQUESTS -----------------
 server.listen(port, () => {
-  console.log(`Listening on ${port}...\nConnected to DB`);
+  console.log(`Listening on ${port}...\nConnected to DB`)
 })
 
 // ------------- DEFAULT ROUTE, JUST TO CHECK API IS ALIVE --------------------
 server.get("/", (request, response) => {
-  response.send("LIVE!");
+  response.send("LIVE!")
 });
 
 //------------------ USERS ROUTE (TEACHERS NAMES) ------------------------------
@@ -33,14 +33,13 @@ server.get("/users", async (request, response) => {
   if(qry==='1')
    {db="development_usercred"}
   if(qry==='2')
-   {db="slcv3"}
-   console.log("tengo --->"+qry + " mi db es: " + db)
+   {db="development_usercred"}
 const result = await sql.dbConn(usersQry(qry),db)
 .then((result)=>{
   console.log(result)
   response.send(result)
 })
-});
+})
 
 //------------------ GROUPS ROUTE -----------------------------------
 server.get("/groups", async (request, response) => {
@@ -51,7 +50,7 @@ server.get("/groups", async (request, response) => {
     console.log(result)
     response.send(result)
   })
-  });
+  })
 
 //--------------------- SAVE/UPDATE GROUPS ROUTE ----------------------------
 
@@ -63,7 +62,7 @@ server.post("/groups", async (request, response) => {
   console.log(result)
   response.send("Groups for "+teacher+" have been updated")
   })
-});
+})
 
 //------------------ STUDENTS ROUTE -----------------------------------
 server.get("/students", async (request, response) => {
@@ -72,7 +71,7 @@ server.get("/students", async (request, response) => {
     console.log(result)
     response.send(result)
   })
-  });
+  })
 
 //--------------------- UPDATE USER PASSWORD ----------------------------
 
@@ -86,12 +85,12 @@ server.post("/updatePassword", async (request, response) => {
   console.log(result)
   response.send("Password has been updated")
   })
-});
+})
 
 //--------------- USER VERIFICATION POST - login
 
 server.post("/login", async (request, response) => {
-  const { username, password } = request.body;
+  const { username, password } = request.body
   console.log(username,password)
   await sql.dbConn("select username,qryname,userpassword from users where username='"+username+"'","development_usercred")
   .then((user)=>{
@@ -100,18 +99,17 @@ server.post("/login", async (request, response) => {
       {bcrypt.compare(password, user[0].userpassword, (err, res) => {
         if (err) {
           console.log(err)
-          response.send(err);
+          response.send(err)
         }
         else
         {
           if (res) {
-          // console.log("esto devuelvo :" + user[0].username + ":" + user[0].userpassword + " busqueda: "+ user[0].qryname)
           const jwtToken = jwt.sign({id: user[0].username}, "token")
-          response.send({message: "Successful Login", token: jwtToken, qry:user[0].qryname});
+          response.send({message: "Successful Login", token: jwtToken, qry:user[0].qryname})
         } else {
-          response.send({message: "Bad username or password"});
+          response.send({message: "Bad username or password"})
         }}
-      });}
+      })}
       else { response.send({message:"Your password hasn't been set yet, contact Admin"})}
 
     }
@@ -119,7 +117,7 @@ server.post("/login", async (request, response) => {
       response.send({message: "Username does not exist"})
     }
   })
-});
+})
 
 
 /*
@@ -263,45 +261,4 @@ server.get("/abstracts", async (request, response) =>
          console.log(abs)
         response.send(abs) // API sends abstracts
   })
-});
-
-
-/// ----------------- CODE BELOW IS TO BE DELETED -----------------------------------
-server.post("/submitProduct", async (request, response) => {
-  const productData = ({ id, productName, brand, quantity, image, price } =
-    request.body);
-  const newProduct = new Product(productData)
-  const saveProduct = await newProduct.save()
-  if (saveProduct) {
-    response.send("Product successfully Added")
-    console.log("Product succesfully added...")
-  } else {
-    response.send("Failed!!!")
-    console.log("Addition failed!!")
-  }
-});
-
-server.delete("/products/:id", async (request, response) => {
-  const { id } = request.params;
-  const deleteProduct = await Product.deleteOne({
-    _id: new mongoose.Types.ObjectId(id),
-  }); //change the id from string to object id to be used by mongoDB
-  deleteProduct ? response.send("Product Deleted") : response.send("FAILED!!");
-});
-
-server.patch("/products/:_id", async (request, response) => {
-  const { _id } = request.params;
-  const product = request.body;
-  console.log(product)
- // console.log(id)
-  console.log(_id)
-  const patchProduct = await Product.updateOne(
-    { _id: new mongoose.Types.ObjectId(_id) },
-    { $set: product }
-  );
-  patchProduct
-    ? response.send(`${product.productName} product is edited`)
-    : response.send("Failed to edit");
-});
-
-
+})

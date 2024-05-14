@@ -28,8 +28,6 @@ export default function LandingPage() {
     gradeAbstracts(qryname).then((result)=>setAbsData(result))
     getdbGroups(qryname).then((result)=>setGroups(result))
   },[qryname])
-  // console.log(qryname)
- 
 
   return (
     <>

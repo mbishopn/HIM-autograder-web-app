@@ -23,7 +23,6 @@ export default function LoginUser() {
   };
 
   const postToDB = async (user) => {                     // ------ calls login function
-    // console.log(user)
     const result= await userLogin(user)
     if (result.msg=="Successful Login")
     {

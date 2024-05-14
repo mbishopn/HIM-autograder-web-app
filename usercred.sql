@@ -1,5 +1,5 @@
 -- this script should be run ONCE before deploying HIM App
--- I will create auxiliary database DEVELOPMENT_USERCRED to store APP-realated exclusive stuff without touching med2020 db (SLCV3)
+-- It will create auxiliary database DEVELOPMENT_USERCRED to store APP-realated exclusive stuff without touching med2020 db (SLCV3)
 -- 
 
 USE [master]
@@ -22,7 +22,7 @@ create table groups
 (
 	id int IDENTITY(1,1) primary key,
 	username varchar(50),               -- teacher username in med2020
-	groups varchar(5000)			-- students names array (JSON stringified)
+	groups varchar(5000)			-- groups/students names array (JSON stringified)
 	)
 
 -- first, let's create the admin user with default password admin
@@ -38,10 +38,6 @@ slcv3.dbo.user_authenticate c
 where b.usercode='100719' 
 and b.RecordID=c.RecordID) bb
 where a.codernumberdesc=bb.userdescription
-
-
-
-
 
 insert into development_usercred.dbo.groups (username) select qryname from development_usercred.dbo.users
 update groups set groups=''

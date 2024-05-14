@@ -1,52 +1,51 @@
-// returns teachers names
+// returns teachers names --------------------------------------------------------------------------------
 usersQry = (x) => {
   let qry=""
   switch (x){
       case '1':  // selects users from auxiliary db
-        qry = "select username from users;"
-      break;
+        qry = "select username from users order by username;"
+      break
       case '2':  // to import new users from med2020, gets all users with abstracts
-        qry="select distinct a.codernumberdesc, bb.UserName from i10_amcare_vr a,"+
-        " (select b.usercode, b.recordid, b.UserDescription,c.username from user_profile b, user_authenticate c"+
-        " where b.usercode='100719' and b.RecordID=c.RecordID) bb where a.codernumberdesc=bb.userdescription"
-      break;
+        qry="insert into development_usercred.dbo.users (qryname, username) select med2020users.codernumberdesc, med2020users.username" +
+        " from (SELECT distinct a.codernumberdesc, bb.username FROM slcv3.dbo.i10_amcare_vr a, " +
+        "(select b.userdescription, c.username from slcv3.dbo.user_profile b, slcv3.dbo.USER_Authenticate c where b.usercode='100719' and b.recordid=c.recordid) bb where a.codernumberdesc=bb.userdescription) med2020users " +
+        "where med2020users.username collate DATABASE_DEFAULT not in (select username from DEVELOPMENT_USERCRED.dbo.users)"
+       break
   }
-  // "select distinct codernumberdesc from i10_amcare_vr where codernumber!='' and codernumber='100719' and isAbstractdeleted='n' order by codernumberdesc";
-  return qry;
-};
+  return qry
+}
 
-// returns groups created by teachers
+// returns groups created by teachers ------------------------------------------------------------------
 groupsQry= (teacher, option,groups='') =>{
   console.log(teacher + " -" + option + " - " + groups)
   switch (option){
     case '1':
       qry= "select groups from groups where username='"+teacher+"'"
-    break;
+    break
     case '2':
       qry= "insert into groups(username,groups) values('" + teacher +"','" + groups + "') "
-    break;
+    break
     case '3':
       qry= "update groups set groups='" + groups + "' where username='" + teacher + "'"
-    break;
+    break
   }
   
-  return qry;
+  return qry
 }
 
-// returns student names
+// returns student names --------------------------------------------------------------------------------
 studentsQry = () => {
   qry =
     "select distinct codernumberdesc as studentName from i10_amcare_vr" +
     " where codernumberdesc!=''" +
     " and codernumber not in ('100719','100664','100667','100835','100665','100748','1','2','4','55555','77777','88888','99999','100000','100001')" +
     " and IsAbstractDeleted='n'" +
-    " order by codernumberdesc";
-  return qry;
+    " order by codernumberdesc"
+  return qry
 };
 
 // returns abtracts for teachers and students according to parameters passed
 const abstractsQry = (teacher, pacient, iStu, sName) => {
-  // console.log(teacher+"-"+pacient+"-"+student)
   qry =
     "select distinct a.zzAbstractLink,a.CoderNumberDesc,a.codernumber," +
     //  /*  ------- abstract headers -------*/
@@ -108,9 +107,9 @@ const abstractsQry = (teacher, pacient, iStu, sName) => {
       : " and a.codernumber='100719' and a.CoderNumberDesc like '%" +
         teacher +
         "%'") +
-    " order by CoderNumberDesc, firstname, lastname, zzabstractlink";
+    " order by CoderNumberDesc, firstname, lastname, zzabstractlink"
 
-  return qry;
-};
+  return qry
+}
 
-module.exports = { abstractsQry, studentsQry, usersQry, groupsQry };
+module.exports = { abstractsQry, studentsQry, usersQry, groupsQry }

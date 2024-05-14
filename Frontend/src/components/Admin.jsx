@@ -1,4 +1,3 @@
-// load components to be rendered
 import LoggedBar from "./loggedBar"
 import UpdatePassword from "./UpdatePassword";
 
